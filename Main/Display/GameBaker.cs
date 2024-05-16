@@ -6,7 +6,7 @@ internal class GameBaker
 
     public static string[] BakedSummaryView => _summaryView;
 
-    public static void Bake()
+    public static void BakeAll()
     {
         _summaryView = BakeSummaryView();
     }

@@ -3,9 +3,10 @@
 namespace Main;
 internal class GameRender
 {
-    public static void RenderWorldMapView(string[] mapText)
+    public static void RenderWorldMapView()
     {
         Console.CursorVisible = false;
+        var mapText = GameGlobals.CurrentGameState.CurrentScene.MapText;
 
         var (width, height) = ConsoleUtils.GetWidthAndHeight();
         int heightCutOff = (int)(height * .80);
@@ -103,7 +104,20 @@ internal class GameRender
                     sb.Append('║');
                     continue;
                 }
-                if (j is 0 || j == heightCutOff - 1)
+                var bannerText = $"══════{(GameGlobals.IsSimulationRunning ? "" : "PAUSED")}══════";
+                if (j is 0)
+                {
+                    if (i < bannerText.Length)
+                    {
+                        sb.Append(bannerText[i-1]);
+                    }
+                    else
+                    {
+                        sb.Append('═');
+                    }
+                    continue;
+                }
+                if (j == heightCutOff - 1)
                 {
                     sb.Append('═');
                     continue;

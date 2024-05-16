@@ -13,7 +13,9 @@ public partial class Program
                 Math.Min(Console.LargestWindowHeight, GameConfig.PreferredConsoleHeight));
 
             Initialize();
-            OpeningScreen();
+            SplashScreen();
+            LoadFirstScenario();
+            LoadFirstScene();
             while (GameGlobals.IsGameRunning)
             {
                 InputUtils.HandleUserInput();
@@ -24,8 +26,8 @@ public partial class Program
                         // run sim logic here
                         Helpers.RunMethodManyTimes(GameSimulator.RunFrame, GameGlobals.GameSpeed);
                     }
-                    GameBaker.Bake();
-                    GameRender.RenderWorldMapView(_defaultMapText);
+                    GameBaker.BakeAll();
+                    GameRender.RenderWorldMapView();
                     SleepAfterRender();
                 }
             }
@@ -43,42 +45,14 @@ public partial class Program
         }
     }
 
-    private static void SleepAfterRender()
-    {
-        // frame rate control
-        DateTime now = DateTime.Now;
-        TimeSpan frameDelta = TimeSpan.FromMilliseconds(1000f / GameConfig.TargetFramerate) - (now - GameGlobals.PreviousRender);
-        if (frameDelta > TimeSpan.Zero)
-        {
-            Thread.Sleep(frameDelta);
-        }
-        GameGlobals.PreviousRender = DateTime.Now;
-    }
-
     private static void Initialize()
     {
         // Do any game init things here
         GameGlobals.IsGameRunning = true;
         GameGlobals.IsSimulationRunning = true;
-
-        InitializePeopleList();
     }
-}
 
-// TODO: this code should not live in Program
-public partial class Program
-{
-    private static readonly string[] _defaultMapText =
-    [
-        "Test a key: [anykey]",
-        "Pause: [p]",
-        "50x Speed: [.]",
-        "1x Speed: [,]",
-        "Test random int generation: [r]",
-        "Quit: [escape]",
-    ];
-
-    private static void OpeningScreen()
+    private static void SplashScreen()
     {
         Console.Clear();
         Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2 - 2);
@@ -89,14 +63,26 @@ public partial class Program
         InputUtils.PressEnterToContinue();
     }
 
-    private static void InitializePeopleList()
+    private static void LoadFirstScenario()
     {
-        GameGlobals.CurrentGameState.SimulatedEntities.AddRange(
-            new List<ISimulated>
-            {
-                new PersonEntity { AgeInSeconds = 86400000L * 13 },
-                new PersonEntity { AgeInSeconds = 86400000L * 19 },
-                new PersonEntity { AgeInSeconds = 86400000L * 25 },
-            });
+        var demoScenario = new DemoScenario();
+        demoScenario.Initialize();
+    }
+
+    private static void LoadFirstScene()
+    {
+        GameGlobals.CurrentGameState.CurrentScene = new OpeningScene();
+    }
+
+    private static void SleepAfterRender()
+    {
+        // frame rate control
+        DateTime now = DateTime.Now;
+        TimeSpan frameDelta = TimeSpan.FromMilliseconds(1000f / GameConfig.TargetFramerate) - (now - GameGlobals.PreviousRender);
+        if (frameDelta > TimeSpan.Zero)
+        {
+            Thread.Sleep(frameDelta);
+        }
+        GameGlobals.PreviousRender = DateTime.Now;
     }
 }
