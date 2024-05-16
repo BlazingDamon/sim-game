@@ -1,29 +1,72 @@
 ﻿namespace Main;
 
-internal class PersonEntity : ISimulated
+internal class PersonEntity : HasHungerEntity
 {
-    public long AgeInSeconds { get; set; }
-    public bool IsAlive { get; set; } = true;
-
-    public void RunSimulationFrame()
+    public PersonEntity()
     {
+        Health = MaxHealth;
+        Hunger = 0;
+    }
+
+    public override void RunSimulationFrame()
+    {
+        base.RunSimulationFrame();
+
         if (IsAlive)
         {
-            AgeInSeconds += GameConfig.TimePerFrameInSeconds;
+            if (IsEntityAgeDayPassedSinceLastFrame())
+            {
+                if (GameRandom.NextInt(2) > 0)
+                {
+                    GameGlobals.CurrentGameState.GlobalInventory.Add(new AppleItem());
+                }
 
-            IsAlive = CheckHealth();
+                IsAlive = HealthCheck();
+            }
+
+            if (IsEntityAgeMonthPassedSinceLastFrame())
+            {
+                IsAlive = HealthCheckAge();
+            }
         }
     }
 
-    private bool CheckHealth()
+    private bool HealthCheck()
     {
-        int healthCheckRoll = GameRandom.NextIntNormalized(0, 350);
-        bool isAlive = healthCheckRoll > (AgeInSeconds / GameConstants.SECONDS_IN_YEAR);
+        int healthCheckRoll = GameRandom.NextInt(30);
+        bool isAlive = healthCheckRoll < Health && Health > 0;
+
         if (!isAlive)
         {
-            GameDebugLogger.WriteLog($"Person died. Age: {AgeInSeconds / GameConstants.SECONDS_IN_YEAR}. HealthCheckRoll: {healthCheckRoll}.");
+            GameDebugLogger.WriteLog($"Person died. Health: {Health}. HealthCheckRoll: {healthCheckRoll}.");
         }
 
         return isAlive;
+    }
+
+    private bool HealthCheckAge()
+    {
+        int ageCheckRoll = GameRandom.NextIntNormalized(0, 250);
+        bool isAlive = ageCheckRoll > AgeInYears;
+
+        if (!isAlive)
+        {
+            GameDebugLogger.WriteLog($"Person died. Age: {AgeInYears}. AgeCheckRoll: {ageCheckRoll}.");
+        }
+
+        return isAlive;
+    }
+
+    protected override void TryToEat()
+    {
+        if (Hunger > 30) {
+            FoodItem? firstFood = GameGlobals.CurrentGameState.GlobalInventory.OfType<FoodItem>().FirstOrDefault();
+
+            if (firstFood is not null)
+            {
+                Hunger = Math.Max(0, Hunger - firstFood.HungerRestored + GameRandom.NextInt(2));
+                GameGlobals.CurrentGameState.GlobalInventory.Remove(firstFood);
+            }
+        }
     }
 }

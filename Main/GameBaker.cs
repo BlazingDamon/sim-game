@@ -17,10 +17,14 @@ internal class GameBaker
         stringList.Add($"Years Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_YEAR}");
         stringList.Add($"Days Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_DAY}");
         stringList.Add("");
+        stringList.Add($"Apple Storage: {GameGlobals.CurrentGameState.GlobalInventory.Count(x => x is AppleItem)}");
+        stringList.Add("");
         foreach (var simEntity in GameGlobals.CurrentGameState.SimulatedEntities)
         {
             if (simEntity is PersonEntity person)
-                stringList.Add($"Person Age: {(person.AgeInSeconds / GameConstants.SECONDS_IN_YEAR):0} years. Status: {(person.IsAlive ? "Alive" : "Dead...")}");
+                stringList.Add($"Person Age: {(person.AgeInSeconds / GameConstants.SECONDS_IN_YEAR):0} years. " +
+                    $"Health: {person.Health}. Hunger: {person.Hunger}. "+
+                    $"Status: {(person.IsAlive ? "Alive" : "Dead...")}");
         }
         return stringList.ToArray();
     }

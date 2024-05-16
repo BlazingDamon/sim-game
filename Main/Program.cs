@@ -8,7 +8,9 @@ public partial class Program
         try
         {
             Console.CursorVisible = false;
-            Console.SetWindowSize(Console.LargestWindowWidth, Console.LargestWindowHeight);
+            Console.SetWindowSize(
+                Math.Min(Console.LargestWindowWidth, GameConfig.PreferredConsoleWidth),
+                Math.Min(Console.LargestWindowHeight, GameConfig.PreferredConsoleHeight));
 
             Initialize();
             OpeningScreen();
@@ -79,10 +81,10 @@ public partial class Program
     private static void OpeningScreen()
     {
         Console.Clear();
-        Console.SetCursorPosition(Console.LargestWindowWidth / 2 - 12, Console.LargestWindowHeight / 2 - 2);
+        Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2 - 2);
 
         Console.Write("    SimGame v0.0.0");
-        Console.SetCursorPosition(Console.LargestWindowWidth / 2 - 12, Console.LargestWindowHeight / 2);
+        Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2);
         Console.Write("Press [enter] to begin...");
         InputUtils.PressEnterToContinue();
     }

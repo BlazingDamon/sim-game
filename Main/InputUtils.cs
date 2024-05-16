@@ -40,7 +40,7 @@ internal class InputUtils
                     GameDebugLogger.WriteLog("Game speed: 1");
                     break;
                 case ConsoleKey.R:
-                    GameDebugLogger.WriteLog("random int: " + GameRandom.NextInt().ToString());
+                    GameDebugLogger.WriteLog("random int (0-250) normalized: " + GameRandom.NextIntNormalized(0, 250).ToString());
                     break;
                 default:
                     GameDebugLogger.WriteLog("key pressed: " + key);
