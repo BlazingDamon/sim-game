@@ -23,11 +23,10 @@ public partial class Program
                 {
                     if (GameGlobals.IsSimulationRunning)
                     {
-                        // run sim logic here
                         Helpers.RunMethodManyTimes(GameSimulator.RunFrame, GameGlobals.GameSpeed);
                     }
                     GameBaker.BakeAll();
-                    GameRender.RenderWorldMapView();
+                    GameRender.Render();
                     SleepAfterRender();
                 }
             }

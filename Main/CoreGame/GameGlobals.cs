@@ -1,4 +1,6 @@
-﻿namespace Main;
+﻿using Main.Menus;
+
+namespace Main;
 internal class GameGlobals
 {
     public static bool IsGameRunning { get; set; }
@@ -9,5 +11,6 @@ internal class GameGlobals
 
     public static GameState CurrentGameState { get; set; } = new();
 
+    public Stack<Menu> MenuStack { get; set; } = new();
     public static int GameSpeed { get; set; } = 1;
 }

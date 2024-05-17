@@ -22,6 +22,7 @@ internal class InputUtils
     {
         while (Console.KeyAvailable)
         {
+            // TODO: this input handler should incorporate the current menu, if any are active
             ConsoleKey key = Console.ReadKey(true).Key;
             switch (key)
             {
@@ -30,20 +31,26 @@ internal class InputUtils
                     break;
                 case ConsoleKey.P:
                     GameGlobals.IsSimulationRunning = !GameGlobals.IsSimulationRunning;
+                    GameDebugLogger.WriteLog($"Game {(GameGlobals.IsSimulationRunning ? "unpaused" : "paused")}.");
                     break;
                 case ConsoleKey.OemPeriod:
-                    GameGlobals.GameSpeed = 50;
-                    GameDebugLogger.WriteLog("Game speed: 50");
+                    if (GameGlobals.GameSpeed != 50)
+                    {
+                        GameGlobals.GameSpeed = 50;
+                        GameDebugLogger.WriteLog("Game speed: 50");
+                    }
                     break;
                 case ConsoleKey.OemComma:
-                    GameGlobals.GameSpeed = 1;
-                    GameDebugLogger.WriteLog("Game speed: 1");
+                    if (GameGlobals.GameSpeed != 1)
+                    {
+                        GameGlobals.GameSpeed = 1;
+                        GameDebugLogger.WriteLog("Game speed: 1");
+                    }
                     break;
                 case ConsoleKey.R:
                     GameDebugLogger.WriteLog("random int (0-250) normalized: " + GameRandom.NextIntNormalized(0, 250).ToString());
                     break;
                 default:
-                    GameDebugLogger.WriteLog("key pressed: " + key);
                     break;
             }
         }

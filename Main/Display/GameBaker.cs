@@ -17,7 +17,7 @@ internal class GameBaker
         stringList.Add($"Years Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_YEAR}");
         stringList.Add($"Days Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_DAY}");
         stringList.Add("");
-        stringList.Add($"Apple Storage: {GameGlobals.CurrentGameState.GlobalInventory.Count(x => x is AppleItem)}");
+        stringList.Add($"Food Storage: {GameGlobals.CurrentGameState.GlobalInventory.Count(x => x is FoodItem)}");
         stringList.Add("");
         foreach (var simEntity in GameGlobals.CurrentGameState.SimulatedEntities)
         {
