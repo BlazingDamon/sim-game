@@ -3,12 +3,11 @@ internal class OpeningScene : Scene
 {
     private static readonly string[] _defaultMapText =
         [
-            "Test a key: [anykey]",
+            "Menu: [esc]",
             "Pause: [p]",
+            "Help Menu: [h]",
             "50x Speed: [.]",
             "1x Speed: [,]",
-            "Test random int generation: [r]",
-            "Quit: [escape]",
         ];
 
     public OpeningScene()

@@ -1,4 +1,7 @@
-﻿namespace Main;
+﻿using Main.Menus;
+using Main.Menus.Base;
+
+namespace Main;
 
 internal class InputUtils
 {
@@ -22,16 +25,36 @@ internal class InputUtils
     {
         while (Console.KeyAvailable)
         {
-            // TODO: this input handler should incorporate the current menu, if any are active
-            ConsoleKey key = Console.ReadKey(true).Key;
+            ConsoleKey key = Console.ReadKey(intercept: true).Key;
+
+            if(GameGlobals.MenuStack.TryPeek(out Menu? menu))
+            {
+                var wasInputHandled = menu.HandleInput(key);
+                
+                if (wasInputHandled)
+                {
+                    continue;
+                }
+            }
+
             switch (key)
             {
                 case ConsoleKey.Escape:
-                    GameGlobals.IsGameRunning = false;
+                    GameGlobals.MenuStack.Push(new MainPauseMenu());
+                    GameGlobals.UserPrefersSimulationRunning = GameGlobals.IsSimulationRunning;
+                    GameGlobals.IsSimulationRunning = false;
+                    GameDebugLogger.WriteLog($"Pause menu opened.");
                     break;
                 case ConsoleKey.P:
                     GameGlobals.IsSimulationRunning = !GameGlobals.IsSimulationRunning;
                     GameDebugLogger.WriteLog($"Game {(GameGlobals.IsSimulationRunning ? "unpaused" : "paused")}.");
+                    break;
+                case ConsoleKey.H:
+                    if (GameGlobals.MenuStack.Count == 0)
+                    {
+                        GameGlobals.MenuStack.Push(new MainHelpMenu());
+                        GameDebugLogger.WriteLog($"Help menu opened.");
+                    }
                     break;
                 case ConsoleKey.OemPeriod:
                     if (GameGlobals.GameSpeed != 50)

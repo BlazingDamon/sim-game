@@ -2,5 +2,6 @@
 internal enum LayoutType
 {
     FullScreen,
-    RightHalf
+    RightThird,
+    RightFixed
 }

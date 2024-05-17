@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Main.Menus.Base;
+using System.Text;
 
 namespace Main.Display;
 internal class ConsoleRenderer
@@ -7,10 +8,11 @@ internal class ConsoleRenderer
     {
         Console.CursorVisible = false;
         var mapText = GameGlobals.CurrentGameState.CurrentScene.MapText;
+        var currentMenuExists = GameGlobals.MenuStack.TryPeek(out Menu? menu);
 
         var (width, height) = ConsoleUtils.GetWidthAndHeight();
         int heightCutOff = (int)(height * .80);
-        int widthCutoff = (int)(width * .50);
+        int widthCutoff = Math.Min(40, (int)(width * .30));
 
         StringBuilder sb = new(width * height);
         for (int j = 0; j < height; j++)
@@ -20,7 +22,14 @@ internal class ConsoleRenderer
                 break;
             }
 
-            sb.Append(RenderOneLine(mapText, width, height, heightCutOff, widthCutoff, j));
+            if (currentMenuExists && menu!.Layout == LayoutType.FullScreen)
+            {
+                sb.Append(RenderOneLineOfFullScreenMenu(menu.MenuBody, menu.MenuTitle, width, height, j));
+            }
+            else
+            {
+                sb.Append(RenderOneLineOfDefaultView(mapText, width, height, heightCutOff, widthCutoff, j));
+            }
 
             if (!OperatingSystem.IsWindows() && j < height - 1)
             {
@@ -30,8 +39,18 @@ internal class ConsoleRenderer
         Console.SetCursorPosition(0, 0);
         Console.Write(sb);
     }
+    private static string RenderOneLineOfFullScreenMenu(string[] bodyText, string headerText, int width, int height, int j)
+    {
+        StringBuilder sb = new(width);
 
-    private static string RenderOneLine(string[] mapText, int width, int height, int heightCutOff, int widthCutoff, int j)
+        for (int i = 0; i < width; i++)
+        {
+            RenderTextInBoxWithOffset(bodyText, width, j, sb, i, 0, 0, height - 2, width, BorderType.SolidBorder, headerText, textTopMargin: 1, textLeftMargin: 2);
+        }
+
+        return sb.ToString();
+    }
+    private static string RenderOneLineOfDefaultView(string[] mapText, int width, int height, int heightCutOff, int widthCutoff, int j)
     {
         StringBuilder sb = new(width);
 
@@ -53,7 +72,7 @@ internal class ConsoleRenderer
 
                 var heightOffset = heightCutOff;
                 var widthOffset = widthCutoff;
-                RenderTextInBoxWithOffset(debugLogs, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   DEBUG LOGS");
+                RenderTextInBoxWithOffset(debugLogs, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, width - widthCutoff, BorderType.SolidBorder, "   DEBUG LOGS");
                 continue;
             }
 
@@ -87,7 +106,9 @@ internal class ConsoleRenderer
         int heightCutoff,
         int widthCutoff,
         BorderType borderType = BorderType.NoBorder,
-        string? headerText = default)
+        string? headerText = default,
+        int textTopMargin = 0,
+        int textLeftMargin = 0)
     {
         int line = j - heightOffset;
         int character = i - widthOffset;
@@ -142,9 +163,9 @@ internal class ConsoleRenderer
             character = i - widthOffset - 1;
         }
 
-        if (i < width - 1 && character >= 0 && line >= 0 && line < bodyText.Length && character < bodyText[line].Length)
+        if (i < width - 1 && character >= textLeftMargin && line >= textTopMargin && (line - textTopMargin) < bodyText.Length && (character - textLeftMargin) < bodyText[line - textTopMargin].Length)
         {
-            char ch = bodyText[line][character];
+            char ch = bodyText[line - textTopMargin][character - textLeftMargin];
             sb.Append(char.IsWhiteSpace(ch) ? ' ' : ch);
         }
         else
