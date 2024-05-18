@@ -50,11 +50,10 @@ internal class InputUtils
                     GameDebugLogger.WriteLog($"Game {(GameGlobals.IsSimulationRunning ? "unpaused" : "paused")}.");
                     break;
                 case ConsoleKey.H:
-                    if (GameGlobals.MenuStack.Count == 0)
-                    {
-                        GameGlobals.MenuStack.Push(new MainHelpMenu());
-                        GameDebugLogger.WriteLog($"Help menu opened.");
-                    }
+                    MenuUtils.TryOpenMenu<MainHelpMenu>();
+                    break;
+                case ConsoleKey.L:
+                    MenuUtils.TryOpenMenu<PeopleListMenu>();
                     break;
                 case ConsoleKey.OemPeriod:
                     if (GameGlobals.GameSpeed != 50)

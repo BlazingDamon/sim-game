@@ -3,17 +3,15 @@
 namespace Main.Menus;
 internal class PeopleListMenu : Menu
 {
-
     public PeopleListMenu()
     {
-        MenuTitle = "   HELP MENU";
+        Layout = LayoutType.RightThird;
+        MenuTitle = "   PEOPLE";
         MenuBody =
             [
-                "Close Menu: [esc]",
-                "Pause: [p]",
-                "Help Menu: [h]",
-                "50x Speed: [.]",
-                "1x Speed: [,]",
+                "Alice",
+                "Bob",
+                "Charlie"
             ];
     }
 
@@ -24,7 +22,7 @@ internal class PeopleListMenu : Menu
         {
             case ConsoleKey.Escape:
                 GameGlobals.MenuStack.Pop();
-                GameDebugLogger.WriteLog($"Help menu exited.");
+                GameDebugLogger.WriteLog($"People menu exited.");
                 break;
             default:
                 wasKeyHandled = false;
@@ -32,5 +30,10 @@ internal class PeopleListMenu : Menu
         }
 
         return wasKeyHandled;
+    }
+
+    public override string[] BakeMenuBody()
+    {
+        return base.BakeMenuBody();
     }
 }
