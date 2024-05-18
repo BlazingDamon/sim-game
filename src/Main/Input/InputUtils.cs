@@ -55,6 +55,9 @@ internal class InputUtils
                 case ConsoleKey.L:
                     MenuUtils.TryOpenMenu<PeopleListMenu>();
                     break;
+                case ConsoleKey.B:
+                    MenuUtils.TryOpenMenu<BuildingMenu>();
+                    break;
                 case ConsoleKey.OemPeriod:
                     if (GameGlobals.GameSpeed != 50)
                     {

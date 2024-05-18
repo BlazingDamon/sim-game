@@ -1,4 +1,7 @@
-﻿namespace Main;
+﻿using Main.Items.Food;
+using Main.Items.Food.Base;
+
+namespace Main;
 
 internal class PersonEntity : HasHungerEntity
 {
@@ -18,7 +21,7 @@ internal class PersonEntity : HasHungerEntity
             {
                 if (GameRandom.NextInt(2) > 0)
                 {
-                    GameGlobals.CurrentGameState.GlobalInventory.Add(new AppleItem());
+                    GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem());
                 }
 
                 IsAlive = HealthCheck();

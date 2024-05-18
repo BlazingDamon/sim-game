@@ -71,7 +71,7 @@ internal class ConsoleRenderer
         for (int i = 0; i < width; i++)
         {
             // "summary text" area
-            if (RenderOverviewCorner(sceneText, width, height, heightCutOff, widthCutoff, j, sb, i))
+            if (RenderOverviewCorner([], width, height, heightCutOff, widthCutoff, j, sb, i))
                 continue;
 
             // debug log area
@@ -117,13 +117,13 @@ internal class ConsoleRenderer
         return sb.ToString();
     }
 
-    private static bool RenderOverviewCorner(string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int j, StringBuilder sb, int i)
+    private static bool RenderOverviewCorner(string[] overviewText, int width, int height, int heightCutOff, int widthCutoff, int j, StringBuilder sb, int i)
     {
         if (j >= heightCutOff && i < widthCutoff)
         {
             var heightOffset = heightCutOff;
             var widthOffset = 0;
-            RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   OVERVIEW");
+            RenderTextInBoxWithOffset(overviewText, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   OVERVIEW");
             return true;
         }
 
@@ -136,7 +136,7 @@ internal class ConsoleRenderer
 
         for (int i = 0; i < width; i++)
         {
-            if (RenderOverviewCorner(sceneText, width, height, heightCutOff, widthCutoff, j, sb, i))
+            if (RenderOverviewCorner([], width, height, heightCutOff, widthCutoff, j, sb, i))
                 continue;
 
             // debug log area
