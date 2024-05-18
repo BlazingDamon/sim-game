@@ -5,7 +5,7 @@ internal class MainPauseMenu : Menu
 {
     public MainPauseMenu()
     {
-        MenuTitle = "   PAUSE MENU";
+        MenuTitle = "   MENU";
         MenuBody =
             [
                 "Close Menu: [esc]",

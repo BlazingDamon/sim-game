@@ -1,5 +1,5 @@
 ﻿namespace Main;
 internal class Scene
 {
-    public string[] MapText { get; set; } = [];
+    public virtual string[] SceneText { get; set; } = [];
 }

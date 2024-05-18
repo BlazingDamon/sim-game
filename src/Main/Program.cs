@@ -56,7 +56,7 @@ public partial class Program
         Console.Clear();
         Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2 - 2);
 
-        Console.Write("    SimGame v0.0.0");
+        Console.Write("    SimGame v0.0.1");
         Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2);
         Console.Write("Press [enter] to begin...");
         InputUtils.PressEnterToContinue();

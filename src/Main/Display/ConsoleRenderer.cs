@@ -8,11 +8,11 @@ internal class ConsoleRenderer
     public static void Render()
     {
         Console.CursorVisible = false;
-        var mapText = GameGlobals.CurrentGameState.CurrentScene.MapText;
+        var sceneText = GameGlobals.CurrentGameState.CurrentScene.SceneText;
         var currentMenuExists = GameGlobals.MenuStack.TryPeek(out Menu? menu);
 
         var (width, height) = ConsoleUtils.GetWidthAndHeight();
-        int heightCutoff = (int)(height * .80);
+        int heightCutoff = Math.Min(height - 8, (int)(height * .80));
         int widthCutoff = Math.Min(40, (int)(width * .30));
 
         StringBuilder sb = new(width * height);
@@ -32,12 +32,12 @@ internal class ConsoleRenderer
                 }
                 else if (menu!.Layout == LayoutType.RightFixed || menu!.Layout == LayoutType.RightThird)
                 {
-                    sb.Append(RenderOneLineOfRightScreenMenuLayout(menu, mapText, width, height, heightCutoff, widthCutoff, j));
+                    sb.Append(RenderOneLineOfRightScreenMenuLayout(menu, sceneText, width, height, heightCutoff, widthCutoff, j));
                 }
             }
             else
             {
-                sb.Append(RenderOneLineOfDefaultLayout(mapText, width, height, heightCutoff, widthCutoff, j));
+                sb.Append(RenderOneLineOfDefaultLayout(sceneText, width, height, heightCutoff, widthCutoff, j));
             }
 
             if (!OperatingSystem.IsWindows() && j < height - 1)
@@ -46,9 +46,6 @@ internal class ConsoleRenderer
             }
 
         }
-
-        // TODO remove debug
-        var debugString = Regex.Replace(sb.ToString(), $".{{{width}}}", "$0\n");
 
         Console.SetCursorPosition(0, 0);
         Console.Write(sb);
@@ -67,20 +64,15 @@ internal class ConsoleRenderer
     }
 
 
-    private static string RenderOneLineOfRightScreenMenuLayout(Menu menu, string[] mapText, int width, int height, int heightCutOff, int widthCutoff, int j)
+    private static string RenderOneLineOfRightScreenMenuLayout(Menu menu, string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int j)
     {
         StringBuilder sb = new(width);
 
         for (int i = 0; i < width; i++)
         {
-            // "menu text" area
-            if (j >= heightCutOff && i < widthCutoff)
-            {
-                var heightOffset = heightCutOff;
-                var widthOffset = 0;
-                RenderTextInBoxWithOffset(mapText, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   MENU OPTIONS");
+            // "summary text" area
+            if (RenderOverviewCorner(sceneText, width, height, heightCutOff, widthCutoff, j, sb, i))
                 continue;
-            }
 
             // debug log area
             if (j >= heightCutOff && i >= widthCutoff)
@@ -104,11 +96,9 @@ internal class ConsoleRenderer
             // main area
             if (j < heightCutOff && i >= 0 && j >= 0 && i < (width - menuWidth))
             {
-                string[] summaryView = GameBaker.BakedSummaryView;
-
                 var heightOffset = 0;
                 var widthOffset = 0;
-                RenderTextInBoxWithOffset(summaryView, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, (width - menuWidth), BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}");
+                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, (width - menuWidth), BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}");
                 continue;
             }
 
@@ -127,20 +117,27 @@ internal class ConsoleRenderer
         return sb.ToString();
     }
 
-    private static string RenderOneLineOfDefaultLayout(string[] mapText, int width, int height, int heightCutOff, int widthCutoff, int j)
+    private static bool RenderOverviewCorner(string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int j, StringBuilder sb, int i)
+    {
+        if (j >= heightCutOff && i < widthCutoff)
+        {
+            var heightOffset = heightCutOff;
+            var widthOffset = 0;
+            RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   OVERVIEW");
+            return true;
+        }
+
+        return false;
+    }
+
+    private static string RenderOneLineOfDefaultLayout(string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int j)
     {
         StringBuilder sb = new(width);
 
         for (int i = 0; i < width; i++)
         {
-            // "menu text" area
-            if (j >= heightCutOff && i < widthCutoff)
-            {
-                var heightOffset = heightCutOff;
-                var widthOffset = 0;
-                RenderTextInBoxWithOffset(mapText, width, j, sb, i, heightOffset, widthOffset, height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, "   MENU OPTIONS");
+            if (RenderOverviewCorner(sceneText, width, height, heightCutOff, widthCutoff, j, sb, i))
                 continue;
-            }
 
             // debug log area
             if (j >= heightCutOff && i >= widthCutoff)
@@ -156,11 +153,9 @@ internal class ConsoleRenderer
             // main area
             if (j < heightCutOff && i >= 0 && j >= 0 && i < width)
             {
-                string[] summaryView = GameBaker.BakedSummaryView;
-
                 var heightOffset = 0;
                 var widthOffset = 0;
-                RenderTextInBoxWithOffset(summaryView, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, width, BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}");
+                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, width, BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}");
                 continue;
             }
 
