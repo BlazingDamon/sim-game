@@ -5,6 +5,6 @@ internal class FarmedFoodItem : FoodItem
 {
     public FarmedFoodItem()
     {
-        HungerRestored = 20;
+        HungerRestored = 25;
     }
 }

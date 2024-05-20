@@ -1,10 +1,14 @@
 ﻿using Main.Items.Food;
 using Main.Items.Food.Base;
+using Main.Systems.Jobs;
+using Main.Systems.Jobs.Base;
 
 namespace Main;
 
 internal class PersonEntity : HasHungerEntity
 {
+    public Job? CurrentJob { get; set; }
+
     public PersonEntity()
     {
         Health = MaxHealth;
@@ -19,12 +23,12 @@ internal class PersonEntity : HasHungerEntity
         {
             if (IsEntityAgeDayPassedSinceLastFrame())
             {
-                if (GameRandom.NextInt(2) > 0)
+                IsAlive = HealthCheck();
+
+                if (CurrentJob is FoodForageJob && GameRandom.NextInt(2) > 0)
                 {
                     GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem());
                 }
-
-                IsAlive = HealthCheck();
             }
 
             if (IsEntityAgeMonthPassedSinceLastFrame())

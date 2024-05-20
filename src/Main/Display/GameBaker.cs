@@ -32,7 +32,8 @@ internal class GameBaker
         {
             if (simEntity is PersonEntity person)
                 stringList.Add($"Person Age: {(person.AgeInSeconds / GameConstants.SECONDS_IN_YEAR):0} years. " +
-                    $"Health: {person.Health}. Hunger: {person.Hunger}. "+
+                    $"Health: {person.Health}. Hunger: {person.Hunger}. " +
+                    $"Job: {(person.CurrentJob is null ? "No" : "Yes")}. " +
                     $"Status: {(person.IsAlive ? "Alive" : "Dead...")}");
         }
         return stringList.ToArray();
