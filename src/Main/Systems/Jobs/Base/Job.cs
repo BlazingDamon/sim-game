@@ -5,9 +5,11 @@ internal class Job
 {
     public PersonEntity AssignedPerson { get; set; }
     public Building? Building { get; set; }
+    public string PlainName { get; init; }
 
-    public Job(PersonEntity assignedPerson, Building? building = default)
+    public Job(string plainName, PersonEntity assignedPerson, Building? building = default)
     {
+        PlainName = plainName;
         AssignedPerson = assignedPerson;
         Building = building;
     }

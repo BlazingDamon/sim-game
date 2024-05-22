@@ -8,7 +8,8 @@ internal class JobSystem : ISimulated
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            List<PersonEntity> allUnassignedPeople = GameGlobals.CurrentGameState.SimulatedEntities.OfType<PersonEntity>().Where(x => x.CurrentJob is null).ToList();
+            List<PersonEntity> allUnassignedPeople = GameGlobals.CurrentGameState.SimulatedEntities
+                .OfType<PersonEntity>().Where(x => x.IsAlive && (x.CurrentJob is null || x.CurrentJob is MaterialsForageJob)).ToList();
             IEnumerable<Building> allUnassignedBuildings = GameGlobals.CurrentGameState.Buildings.OfType<Building>().Where(x => x.AssignedJob is null);
 
             foreach (var building in allUnassignedBuildings)
@@ -16,7 +17,10 @@ internal class JobSystem : ISimulated
                 PersonEntity? firstAvailablePerson = allUnassignedPeople.FirstOrDefault();
                 if (firstAvailablePerson is not null)
                 {
-                    var job = new Job(firstAvailablePerson, building);
+                    if (firstAvailablePerson.CurrentJob is not null)
+                        firstAvailablePerson.CurrentJob.Unassign();
+
+                    var job = new Job(building.RecommendedJobPlainName, firstAvailablePerson, building);
                     firstAvailablePerson.CurrentJob = job;
                     building.AssignedJob = job;
                     allUnassignedPeople.Remove(firstAvailablePerson);
@@ -25,6 +29,12 @@ internal class JobSystem : ISimulated
                 {
                     break;
                 }
+            }
+
+            foreach (var unassignedPerson in allUnassignedPeople)
+            {
+                var job = new MaterialsForageJob(unassignedPerson);
+                unassignedPerson.CurrentJob = job;
             }
         }
     }

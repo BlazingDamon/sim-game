@@ -9,6 +9,9 @@ internal class MainPauseMenu : Menu
         MenuBody =
             [
                 "Close Menu: [esc]",
+                "Help Menu: [h]",
+                "",
+                "",
                 "Exit Game: [0]",
             ];
     }

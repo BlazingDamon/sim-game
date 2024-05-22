@@ -1,4 +1,6 @@
-﻿namespace Main;
+﻿using Main.CoreGame;
+
+namespace Main;
 
 internal class GameState
 {
@@ -11,4 +13,6 @@ internal class GameState
     public List<Item> GlobalInventory { get; } = new();
 
     public Scene CurrentScene { get; set; } = new();
+
+    public GameLogger GameLogger { get; set; } = new();
 }

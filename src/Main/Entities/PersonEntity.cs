@@ -1,5 +1,6 @@
 ﻿using Main.Items.Food;
 using Main.Items.Food.Base;
+using Main.Items.Material;
 using Main.Systems.Jobs;
 using Main.Systems.Jobs.Base;
 
@@ -25,9 +26,21 @@ internal class PersonEntity : HasHungerEntity
             {
                 IsAlive = HealthCheck();
 
-                if (CurrentJob is FoodForageJob && GameRandom.NextInt(2) > 0)
+                if (CurrentJob is FoodForageJob && GameRandom.NextInt(3) > 1)
                 {
                     GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem());
+                }
+                else if (CurrentJob is MaterialsForageJob)
+                {
+                    int random = GameRandom.NextInt(100);
+                    if (random > 75)
+                    {
+                        GameGlobals.CurrentGameState.GlobalInventory.Add(new StoneItem());
+                    }
+                    else if (random > 25)
+                    {
+                        GameGlobals.CurrentGameState.GlobalInventory.Add(new WoodItem());
+                    }
                 }
             }
 
@@ -38,6 +51,11 @@ internal class PersonEntity : HasHungerEntity
         }
     }
 
+    private void DoDeath()
+    {
+        CurrentJob?.Unassign();
+    }
+
     private bool HealthCheck()
     {
         int healthCheckRoll = GameRandom.NextInt(30);
@@ -46,6 +64,8 @@ internal class PersonEntity : HasHungerEntity
         if (!isAlive)
         {
             GameDebugLogger.WriteLog($"Person died. Health: {Health}. HealthCheckRoll: {healthCheckRoll}.");
+            GameGlobals.CurrentGameState.GameLogger.WriteLog($"A person has died in poor health, at age {AgeInYears}.");
+            DoDeath();
         }
 
         return isAlive;
@@ -58,7 +78,9 @@ internal class PersonEntity : HasHungerEntity
 
         if (!isAlive)
         {
-            GameDebugLogger.WriteLog($"Person died. Age: {AgeInYears}. AgeCheckRoll: {ageCheckRoll}.");
+            GameDebugLogger.WriteLog($"A person has died of natural causes, at age {AgeInYears}. AgeCheckRoll: {ageCheckRoll}.");
+            GameGlobals.CurrentGameState.GameLogger.WriteLog($"A person has died of natural causes, at age {AgeInYears}.");
+            DoDeath();
         }
 
         return isAlive;

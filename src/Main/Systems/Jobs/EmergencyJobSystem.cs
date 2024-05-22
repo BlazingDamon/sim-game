@@ -10,7 +10,7 @@ internal class EmergencyJobSystem : ISimulated
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            var allPeople = GameGlobals.CurrentGameState.SimulatedEntities.OfType<PersonEntity>();
+            var allPeople = GameGlobals.CurrentGameState.SimulatedEntities.OfType<PersonEntity>().Where(x => x.IsAlive);
             if (ItemSearcher.GetItemCount<FoodItem>() < 20)
             {
                 List<FarmBuilding> allUnassignedFarms = GameGlobals.CurrentGameState.Buildings.OfType<FarmBuilding>().Where(x => x.AssignedJob is null).ToList();
@@ -25,7 +25,7 @@ internal class EmergencyJobSystem : ISimulated
                         var firstUnassignedFarm = allUnassignedFarms.FirstOrDefault();
                         if (firstUnassignedFarm is not null)
                         {
-                            person.CurrentJob = new Job(person, firstUnassignedFarm);
+                            person.CurrentJob = new Job(firstUnassignedFarm.RecommendedJobPlainName, person, firstUnassignedFarm);
                             allUnassignedFarms.Remove(firstUnassignedFarm);
                         }
                         else

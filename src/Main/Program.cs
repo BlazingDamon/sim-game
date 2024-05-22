@@ -39,7 +39,7 @@ public partial class Program
         finally
         {
             Console.Clear();
-            Console.WriteLine(exception?.ToString() ?? "SimGame was closed.");
+            Console.WriteLine(exception?.ToString() ?? "Statue Hoard was closed.");
             Console.CursorVisible = true;
         }
     }
@@ -49,16 +49,44 @@ public partial class Program
         // Do any game init things here
         GameGlobals.IsGameRunning = true;
         GameGlobals.IsSimulationRunning = true;
+        GameGlobals.UserPrefersSimulationRunning = true;
     }
 
     private static void SplashScreen()
     {
-        Console.Clear();
-        Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2 - 2);
+        string[] splashText =
+            [
+                "Welcome to Statue Hoard!",
+                "",
+                "You are the leader of a small group of travelers looking to start a settlement.",
+                "Build farms to produce food, lumber mills to produce wood, and quarries for stone.",
+                "Be careful to not run out of food! If you stockpile enough food, you might attract",
+                "extra travelers to join your village. As all travelers know, the best way to become",
+                "wealthy is to create and collect statues. Once you have stockpiled some wood and stone,",
+                "build statue workshops to begin creating statues from wood and stone.",
+                "",
+                "In 180 days, your collection of statues should be the envy of the land!",
+                "",
+                "Good luck!",
+                "",
+                "",
+                "Press [enter] to begin..."
+            ];
 
-        Console.Write("    SimGame v0.0.1");
-        Console.SetCursorPosition(Console.WindowWidth / 2 - 12, Console.WindowHeight / 2);
-        Console.Write("Press [enter] to begin...");
+        int textWidth = splashText.Select(x => x.Length).Max();
+        int textHeight = splashText.Length;
+        int centerTextHeight = textHeight / 2;
+        int centerConsoleWidth = Console.WindowWidth / 2;
+        int centerConsoleHeight = Console.WindowHeight / 2;
+
+        Console.Clear();
+        for (int i = 0; i < splashText.Length; i++)
+        {
+            string lineOfText = splashText[i];
+            Console.SetCursorPosition(centerConsoleWidth - lineOfText.Length / 2, centerConsoleHeight - centerTextHeight + i);
+            Console.Write(lineOfText);
+        }
+
         InputUtils.PressEnterToContinue();
     }
 

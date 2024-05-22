@@ -4,6 +4,11 @@ using Main.Items.Material;
 namespace Main.Entities.Buildings;
 internal class QuarryBuilding : Building
 {
+    public QuarryBuilding()
+    {
+        RecommendedJobPlainName = "digging up stone at a quarry";
+    }
+
     public override void RunSimulationFrame()
     {
         if (AssignedJob is not null)

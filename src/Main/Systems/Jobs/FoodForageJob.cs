@@ -3,7 +3,8 @@
 namespace Main.Systems.Jobs;
 internal class FoodForageJob : Job
 {
-    public FoodForageJob(PersonEntity assignedPerson) : base(assignedPerson)
+    private static readonly string _plainName = "foraging for food";
+    public FoodForageJob(PersonEntity assignedPerson) : base(_plainName, assignedPerson)
     {
     }
 }

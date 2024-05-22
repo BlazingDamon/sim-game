@@ -4,6 +4,11 @@ using Main.Items.Material;
 namespace Main.Entities.Buildings;
 internal class LumberMillBuilding : Building
 {
+    public LumberMillBuilding()
+    {
+        RecommendedJobPlainName = "sawing away at a lumber mill";
+    }
+
     public override void RunSimulationFrame()
     {
         if (AssignedJob is not null)

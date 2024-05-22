@@ -1,6 +1,9 @@
 ﻿using Main.Items.Food;
 using Main.Items.Material;
+using Main.Menus;
+using Main.Systems.Events;
 using Main.Systems.Jobs;
+using Main.Systems.Travelers;
 
 namespace Main;
 internal class DemoScenario : IScenario
@@ -17,6 +20,8 @@ internal class DemoScenario : IScenario
             {
                 new EmergencyJobSystem(),
                 new JobSystem(),
+                new TravelerSystem(),
+                new EventSystem(),
             });
 
         GameGlobals.CurrentGameState.SimulatedEntities.AddRange(
@@ -29,8 +34,10 @@ internal class DemoScenario : IScenario
 
         var itemList = new List<Item>();
         Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 50);
-        Helpers.RunMethodManyTimes(() => itemList.Add(new WoodItem()), 200);
-        Helpers.RunMethodManyTimes(() => itemList.Add(new StoneItem()), 200);
+        Helpers.RunMethodManyTimes(() => itemList.Add(new WoodItem()), 10);
+        Helpers.RunMethodManyTimes(() => itemList.Add(new StoneItem()), 5);
         GameGlobals.CurrentGameState.GlobalInventory.AddRange(itemList);
+
+        GameGlobals.MenuStack.Push(new BuildingMenu());
     }
 }

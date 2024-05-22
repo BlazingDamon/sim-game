@@ -3,17 +3,26 @@
 namespace Main.Menus;
 internal class MainHelpMenu : Menu
 {
-
     public MainHelpMenu()
     {
         MenuTitle = "   HELP MENU";
         MenuBody = 
             [
+                "Controls",
                 "Close Menu: [esc]",
-                "Pause: [p]",
+                "Pause: [/]",
                 "Help Menu: [h]",
-                "50x Speed: [.]",
+                "30x Speed: [.]",
                 "1x Speed: [,]",
+                "Building Menu: [b]",
+                "",
+                "Goal of the Game",
+                "- At the end of your first year, you should strive to have as many statues hoarded as you can muster!",
+                "",
+                "Tips",
+                "- If your food stockpile falls below 20, your people will stop their non-farming occupations to forage.",
+                "- If your food stockpile has at least 10 food per person in your population, travelers will continue to arrive.",
+                "- Lumber mills produce wood at a faster rate than quarries produce stone."
             ];
     }
 

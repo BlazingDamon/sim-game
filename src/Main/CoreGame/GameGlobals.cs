@@ -6,6 +6,7 @@ internal class GameGlobals
     public static bool IsGameRunning { get; set; }
     public static bool IsSimulationRunning { get; set; }
     public static bool UserPrefersSimulationRunning { get; set; }
+    public static bool IsDebugModeEnabled { get; set; }
 
 
     public static DateTime PreviousRender { get; set; } = DateTime.Now;
@@ -14,5 +15,6 @@ internal class GameGlobals
     public static GameState CurrentGameState { get; set; } = new();
 
     public static Stack<Menu> MenuStack { get; set; } = new();
+    public static int MainDisplayScrollHeight { get; set; } = 0;
     public static int GameSpeed { get; set; } = 1;
 }

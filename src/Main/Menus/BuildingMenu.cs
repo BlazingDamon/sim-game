@@ -13,11 +13,16 @@ internal class BuildingMenu : Menu
         MenuBody =
             [
                 "Farm: [f]",
-                "  10 wood",
+                "  Build Cost: 10 wood",
                 "Lumber Mill: [l]",
-                "  5 stone",
+                "  Build Cost: 5 stone",
                 "Quarry: [q]",
-                "  10 wood, 10 stone"
+                "  Build Cost: 10 wood, 10 stone",
+                "Statue Workshop: [s]",
+                "  Build Cost: 30 wood, 30 stone",
+                "  Unit Cost: 10 wood, 10 stone",
+                "  Statues won't be built until stockpile",
+                "   of wood and stone both reach 40.",
             ];
     }
 
@@ -48,6 +53,14 @@ internal class BuildingMenu : Menu
                     ItemSearcher.TryUseItem<WoodItem>(10);
                     ItemSearcher.TryUseItem<StoneItem>(10);
                     GameGlobals.CurrentGameState.Buildings.Add(new QuarryBuilding());
+                }
+                break;
+            case ConsoleKey.S:
+                if (ItemSearcher.CheckItemCountIsAtLeast<WoodItem>(30) && ItemSearcher.CheckItemCountIsAtLeast<StoneItem>(30))
+                {
+                    ItemSearcher.TryUseItem<WoodItem>(30);
+                    ItemSearcher.TryUseItem<StoneItem>(30);
+                    GameGlobals.CurrentGameState.Buildings.Add(new StatueWorkshopBuilding());
                 }
                 break;
             default:

@@ -27,7 +27,7 @@ internal class InputUtils
         {
             ConsoleKey key = Console.ReadKey(intercept: true).Key;
 
-            if(GameGlobals.MenuStack.TryPeek(out Menu? menu))
+            if (GameGlobals.MenuStack.TryPeek(out Menu? menu))
             {
                 var wasInputHandled = menu.HandleInput(key);
                 
@@ -45,24 +45,27 @@ internal class InputUtils
                     GameGlobals.IsSimulationRunning = false;
                     GameDebugLogger.WriteLog($"Pause menu opened.");
                     break;
-                case ConsoleKey.P:
+                case ConsoleKey.Oem2:
                     GameGlobals.IsSimulationRunning = !GameGlobals.IsSimulationRunning;
                     GameDebugLogger.WriteLog($"Game {(GameGlobals.IsSimulationRunning ? "unpaused" : "paused")}.");
                     break;
                 case ConsoleKey.H:
-                    MenuUtils.TryOpenMenu<MainHelpMenu>();
-                    break;
-                case ConsoleKey.L:
-                    MenuUtils.TryOpenMenu<PeopleListMenu>();
+                    MenuUtils.TryOpenMenuNoDuplicates<MainHelpMenu>();
                     break;
                 case ConsoleKey.B:
-                    MenuUtils.TryOpenMenu<BuildingMenu>();
+                    MenuUtils.TryOpenMenuFromEmpty<BuildingMenu>();
+                    break;
+                case ConsoleKey.K:
+                    GameGlobals.MainDisplayScrollHeight -= 5;
+                    break;
+                case ConsoleKey.J:
+                    GameGlobals.MainDisplayScrollHeight += 5;
                     break;
                 case ConsoleKey.OemPeriod:
-                    if (GameGlobals.GameSpeed != 50)
+                    if (GameGlobals.GameSpeed != 30)
                     {
-                        GameGlobals.GameSpeed = 50;
-                        GameDebugLogger.WriteLog("Game speed: 50");
+                        GameGlobals.GameSpeed = 30;
+                        GameDebugLogger.WriteLog("Game speed: 30");
                     }
                     break;
                 case ConsoleKey.OemComma:
@@ -72,8 +75,8 @@ internal class InputUtils
                         GameDebugLogger.WriteLog("Game speed: 1");
                     }
                     break;
-                case ConsoleKey.R:
-                    GameDebugLogger.WriteLog("random int (0-250) normalized: " + GameRandom.NextIntNormalized(0, 250).ToString());
+                case ConsoleKey.F1:
+                    GameGlobals.IsDebugModeEnabled = !GameGlobals.IsDebugModeEnabled;
                     break;
                 default:
                     break;
