@@ -1,11 +1,11 @@
 ﻿using Main.Menus.Base;
 
 namespace Main.Menus;
-internal class HalfwayMenu : Menu
+internal class PartWayMenu : Menu
 {
     public int NumberOfStatues { get; init; }
 
-    public HalfwayMenu(int numberOfStatues)
+    public PartWayMenu(int numberOfStatues)
     {
         NumberOfStatues = numberOfStatues;
         TextLayout = TextLayoutType.TopCenter;
@@ -22,7 +22,7 @@ internal class HalfwayMenu : Menu
                 "",
                 "",
                 "",
-                "You are half way to 180 days, traveler!",
+                "You are 30 days away from 180 days, traveler!",
                 "",
                 $"Remember, your goal is to hoard as many statues as you can before the time's up!",
                 "",
@@ -31,7 +31,7 @@ internal class HalfwayMenu : Menu
             ];
 
         menuBody.Add("");
-        menuBody.Add("Press [enter] to continue the game...");
+        menuBody.Add("Press [esc] or [enter] to continue the game...");
 
         MenuBody = menuBody.ToArray();
     }
@@ -42,6 +42,7 @@ internal class HalfwayMenu : Menu
         switch (pressedKey)
         {
             case ConsoleKey.Enter:
+            case ConsoleKey.Escape:
                 GameGlobals.MenuStack.Pop();
                 GameGlobals.IsSimulationRunning = GameGlobals.UserPrefersSimulationRunning;
                 break;

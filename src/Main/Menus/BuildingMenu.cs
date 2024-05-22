@@ -9,7 +9,7 @@ internal class BuildingMenu : Menu
     public BuildingMenu()
     {
         Layout = LayoutType.RightThird;
-        MenuTitle = "   BUILDING";
+        MenuTitle = "   BUILDING MENU";
         MenuBody =
             [
                 "Farm: [f]",
@@ -38,12 +38,14 @@ internal class BuildingMenu : Menu
             case ConsoleKey.F:
                 if (ItemSearcher.TryUseItem<WoodItem>(10))
                 {
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a farm.");
                     GameGlobals.CurrentGameState.Buildings.Add(new FarmBuilding());
                 }
                 break;
             case ConsoleKey.L:
                 if (ItemSearcher.TryUseItem<StoneItem>(5))
                 {
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a lumber mill.");
                     GameGlobals.CurrentGameState.Buildings.Add(new LumberMillBuilding());
                 }
                 break;
@@ -52,6 +54,8 @@ internal class BuildingMenu : Menu
                 {
                     ItemSearcher.TryUseItem<WoodItem>(10);
                     ItemSearcher.TryUseItem<StoneItem>(10);
+
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a quarry.");
                     GameGlobals.CurrentGameState.Buildings.Add(new QuarryBuilding());
                 }
                 break;
@@ -60,6 +64,8 @@ internal class BuildingMenu : Menu
                 {
                     ItemSearcher.TryUseItem<WoodItem>(30);
                     ItemSearcher.TryUseItem<StoneItem>(30);
+
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a statue workshop.");
                     GameGlobals.CurrentGameState.Buildings.Add(new StatueWorkshopBuilding());
                 }
                 break;

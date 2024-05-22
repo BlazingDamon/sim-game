@@ -1,6 +1,5 @@
 ﻿using Main.Menus.Base;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace Main.Display;
 internal class ConsoleRenderer
@@ -94,7 +93,7 @@ internal class ConsoleRenderer
             {
                 var heightOffset = 0;
                 var widthOffset = 0;
-                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, (width - menuWidth), BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}", footerText: (sceneText.Length > heightCutOff - 1 ? "[j] to scroll down, [k] to scroll up" : null), bodyTextScrollHeight: mainDisplayScroll);
+                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, (width - menuWidth), BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}", footerText: (sceneText.Length > heightCutOff - 2 ? "   [j] to scroll down, [k] to scroll up   " : null), bodyTextScrollHeight: mainDisplayScroll);
                 continue;
             }
 
@@ -164,7 +163,7 @@ internal class ConsoleRenderer
             {
                 var heightOffset = 0;
                 var widthOffset = 0;
-                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, width, BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}", footerText: (sceneText.Length > heightCutOff - 1 ? "[j] to scroll down, [k] to scroll up" : null), bodyTextScrollHeight: mainDisplayScroll);
+                RenderTextInBoxWithOffset(sceneText, width, j, sb, i, heightOffset, widthOffset, heightCutOff - 1, width, BorderType.SolidBorder, $"{(GameGlobals.IsSimulationRunning ? "" : "   PAUSED")}", footerText: (sceneText.Length > heightCutOff - 1 ? "   [j] to scroll down, [k] to scroll up   " : null), bodyTextScrollHeight: mainDisplayScroll);
                 continue;
             }
 
@@ -255,10 +254,17 @@ internal class ConsoleRenderer
             characterOffset = Math.Max(characterOffset, 0);
         }
 
-        if (line == heightCutoff - 2 && footerText is not null && character >= textLeftMargin && (character - textLeftMargin) < footerText.Length)
+        if (line == heightCutoff - 2 && footerText is not null && character >= textLeftMargin)
         {
-            char ch = footerText[character - textLeftMargin];
-            sb.Append(char.IsWhiteSpace(ch) ? ' ' : ch);
+            if ((character - textLeftMargin) < footerText.Length)
+            {
+                char ch = footerText[character - textLeftMargin];
+                sb.Append(char.IsWhiteSpace(ch) ? ' ' : ch);
+            }
+            else
+            {
+                sb.Append(' ');
+            }
 
         }
         else if (i < width - 1 && (character - characterOffset) >= textLeftMargin && line >= textTopMargin && (line - textTopMargin + bodyTextScrollHeight) < bodyText.Length && (character - characterOffset - textLeftMargin) < bodyText[line - textTopMargin + bodyTextScrollHeight].Length)

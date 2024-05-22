@@ -17,7 +17,7 @@ internal class QuarryBuilding : Building
 
             if (FramesSinceLastProduct * GameConfig.TimePerFrameInSeconds > SecondsToProduceProduct)
             {
-                int howManyProducts = GameRandom.NextInt(1, 3);
+                int howManyProducts = GameRandom.NextInt(2, 4);
                 Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new StoneItem()), howManyProducts);
 
                 FramesSinceLastProduct = 0;

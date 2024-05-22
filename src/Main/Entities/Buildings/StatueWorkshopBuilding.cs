@@ -9,6 +9,7 @@ internal class StatueWorkshopBuilding : Building
     public StatueWorkshopBuilding()
     {
         RecommendedJobPlainName = "carefully crafting at a statue workshop";
+        SecondsToProduceProduct = GameConstants.SECONDS_IN_DAY * 3;
     }
 
     public override void RunSimulationFrame()

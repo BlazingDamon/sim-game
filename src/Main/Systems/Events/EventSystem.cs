@@ -5,15 +5,15 @@ using Main.Menus;
 namespace Main.Systems.Events;
 internal class EventSystem : ISimulated
 {
-    private static readonly long FRAME_AT_90_DAYS = (GameConstants.SECONDS_IN_DAY * 90) / GameConfig.TimePerFrameInSeconds;
+    private static readonly long FRAME_AT_150_DAYS = (GameConstants.SECONDS_IN_DAY * 150) / GameConfig.TimePerFrameInSeconds;
     private static readonly long FRAME_AT_180_DAYS = (GameConstants.SECONDS_IN_DAY * 180) / GameConfig.TimePerFrameInSeconds;
 
     public void RunSimulationFrame()
     {
-        if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_90_DAYS)
+        if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_150_DAYS)
         {
             GameGlobals.IsSimulationRunning = false;
-            GameGlobals.MenuStack.Push(new HalfwayMenu(ItemSearcher.GetItemCount<StatueItem>()));
+            GameGlobals.MenuStack.Push(new PartWayMenu(ItemSearcher.GetItemCount<StatueItem>()));
         }
 
         if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_180_DAYS)

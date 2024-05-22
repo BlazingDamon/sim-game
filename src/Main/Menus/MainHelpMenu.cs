@@ -9,12 +9,13 @@ internal class MainHelpMenu : Menu
         MenuBody = 
             [
                 "Controls",
-                "Close Menu: [esc]",
-                "Pause: [/]",
-                "Help Menu: [h]",
-                "30x Speed: [.]",
-                "1x Speed: [,]",
-                "Building Menu: [b]",
+                "- Close Menu: [esc]",
+                "- Pause Time: [/]",
+                "- 30x Speed: [.]",
+                "- 1x Speed: [,]",
+                "- Building Menu: [b]",
+                "- Help Menu: [h]",
+                "",
                 "",
                 "Goal of the Game",
                 "- At the end of your first year, you should strive to have as many statues hoarded as you can muster!",
@@ -22,7 +23,8 @@ internal class MainHelpMenu : Menu
                 "Tips",
                 "- If your food stockpile falls below 20, your people will stop their non-farming occupations to forage.",
                 "- If your food stockpile has at least 10 food per person in your population, travelers will continue to arrive.",
-                "- Lumber mills produce wood at a faster rate than quarries produce stone."
+                "- Lumber mills produce wood at a faster rate than quarries produce stone.",
+                "- Villagers without assigned jobs will forage for wood and stone, which can be helpful.",
             ];
     }
 

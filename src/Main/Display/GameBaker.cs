@@ -67,9 +67,9 @@ internal class GameBaker
 
         stringList.Add($"Days Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_DAY,3}");
         stringList.Add($"Hour of Day: {((GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) % GameConstants.SECONDS_IN_DAY) / GameConstants.SECONDS_IN_HOUR,3}");
-        stringList.Add("");
-        stringList.Add("To unpause/pause, press [/]");
-        stringList.Add("For building menu, press [b]");
+        stringList.Add($"Food: {ItemSearcher.GetItemCount<FoodItem>(),3}       Wood:{ItemSearcher.GetItemCount<WoodItem>(),3}");
+        stringList.Add($"Stone:{ItemSearcher.GetItemCount<StoneItem>(),3}    Statues:{ItemSearcher.GetItemCount<StatueItem>(),3}");
+        stringList.Add($"");
         stringList.Add("For help, press [h]");
 
         return stringList.ToArray();
