@@ -57,39 +57,38 @@ internal class ConsoleRenderer
 
         for (int consoleCharacter = 0; consoleCharacter < width; consoleCharacter++)
         {
-            RenderTextInBoxWithOffset(menu.MenuBody, width, consoleLine, sb, consoleCharacter, 0, 0, height - 2, width, BorderType.SolidBorder, menu.MenuTitle, textTopMargin: 1, textLeftMargin: 2, textLayout: menu.TextLayout);
+            ConsoleTextBoxRenderer.RenderTextBox(menu.MenuBody, width, consoleLine, sb, consoleCharacter, 0, 0, height - 2, width, BorderType.SolidBorder, menu.MenuTitle, textTopMargin: 1, textLeftMargin: 2, textLayout: menu.TextLayout);
         }
 
         return sb.ToString();
     }
 
-    private static string RenderOneLineOfRightScreenMenuLayout(Menu menu, string[] overviewText, string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int consoleLine)
+    private static string RenderOneLineOfRightScreenMenuLayout(Menu menu, string[] overviewText, string[] sceneText, int consoleWidth, int consoleHeight, int heightCutoff, int widthCutoff, int consoleLine)
     {
-        StringBuilder sb = new(width);
-        int mainDisplayScroll = Math.Clamp(GameGlobals.MainDisplayScrollHeight, 0, Math.Max(0, sceneText.Length - heightCutOff + 3));
-        GameGlobals.MainDisplayScrollHeight = mainDisplayScroll;
+        StringBuilder sb = new(consoleWidth);
+        int mainDisplayScroll = ClampMainDisplayScroll(sceneText.Length, heightCutoff - 3);
 
-        for (int consoleCharacter = 0; consoleCharacter < width; consoleCharacter++)
+        for (int consoleCharacter = 0; consoleCharacter < consoleWidth; consoleCharacter++)
         {
-            if (RenderOverviewCorner(overviewText, width, height, heightCutOff, widthCutoff, consoleLine, sb, consoleCharacter))
+            if (RenderOverviewCorner(overviewText, consoleWidth, consoleHeight, heightCutoff, widthCutoff, consoleLine, sb, consoleCharacter))
                 continue;
 
-            if (RenderLogsCorner(width, height, heightCutOff, widthCutoff, consoleLine, sb, consoleCharacter))
+            if (RenderLogsCorner(consoleWidth, consoleHeight, heightCutoff, widthCutoff, consoleLine, sb, consoleCharacter))
                 continue;
 
             int menuWidth;
             if (menu.Layout == LayoutType.RightThird)
-                menuWidth = (int)(width * 0.3333);
+                menuWidth = (int)(consoleWidth * 0.3333);
             else if (menu.Layout == LayoutType.RightFixed && menu.MenuWidth.HasValue)
-                menuWidth = width - menu.MenuWidth.Value;
+                menuWidth = consoleWidth - menu.MenuWidth.Value;
             else
                 throw new Exception("There is a misconfigured menu layout. Check that MenuWidth is set correctly, or that your LayoutType is handled correctly.");
 
-            if (RenderMainArea(sceneText, width, heightCutOff, consoleLine, sb, mainDisplayScroll, consoleCharacter, menuWidth))
+            if (RenderMainArea(sceneText, consoleWidth, heightCutoff, consoleLine, sb, mainDisplayScroll, consoleCharacter, menuWidth))
                 continue;
 
             // menu area
-            if (RenderMenu(menu, width, heightCutOff, consoleLine, sb, consoleCharacter, menuWidth))
+            if (RenderMenu(menu, consoleWidth, heightCutoff, consoleLine, sb, consoleCharacter, menuWidth))
                 continue;
 
             // if you made it here, this is just extra whitespace to fill out the lines
@@ -103,8 +102,7 @@ internal class ConsoleRenderer
     private static string RenderOneLineOfDefaultLayout(string[] overviewText, string[] sceneText, int width, int height, int heightCutOff, int widthCutoff, int consoleLine)
     {
         StringBuilder sb = new(width);
-        int mainDisplayScroll = Math.Clamp(GameGlobals.MainDisplayScrollHeight, 0, Math.Max(0, sceneText.Length - heightCutOff + 3));
-        GameGlobals.MainDisplayScrollHeight = mainDisplayScroll;
+        int mainDisplayScroll = ClampMainDisplayScroll(sceneText.Length, heightCutOff - 3);
 
         for (int consoleCharacter = 0; consoleCharacter < width; consoleCharacter++)
         {
@@ -130,7 +128,7 @@ internal class ConsoleRenderer
     {
         if (consoleLine < heightCutOff && consoleCharacter >= 0 && consoleLine >= 0 && consoleCharacter >= (width - menuWidth))
         {
-            RenderTextInBoxWithOffset(menu.MenuBody, width, consoleLine, sb, consoleCharacter, 0, (width - menuWidth),
+            ConsoleTextBoxRenderer.RenderTextBox(menu.MenuBody, width, consoleLine, sb, consoleCharacter, 0, (width - menuWidth),
                 heightCutOff - 1, menuWidth, BorderType.SolidBorder, headerText: menu.MenuTitle, footerText: menu.MenuFooter, textTopMargin: 1, textLeftMargin: 2, textLayout: menu.TextLayout);
             return true;
         }
@@ -159,7 +157,7 @@ internal class ConsoleRenderer
                     footerText = "   [j] to scroll down, [k] to scroll up";
             }
 
-            RenderTextInBoxWithOffset(sceneText, width, consoleLine, sb, consoleCharacter, heightOffset: 0, widthOffset: 0,
+            ConsoleTextBoxRenderer.RenderTextBox(sceneText, width, consoleLine, sb, consoleCharacter, heightOffset: 0, widthOffset: 0,
                 heightCutOff - 1, (width - menuWidth), BorderType.SolidBorder, headerText, footerText, bodyTextScrollHeight: mainDisplayScroll);
             return true;
         }
@@ -179,7 +177,7 @@ internal class ConsoleRenderer
 
             var heightOffset = heightCutOff;
             var widthOffset = widthCutoff;
-            RenderTextInBoxWithOffset(logs, width, consoleLine, sb, consoleCharacter, heightOffset, widthOffset,
+            ConsoleTextBoxRenderer.RenderTextBox(logs, width, consoleLine, sb, consoleCharacter, heightOffset, widthOffset,
                 height - heightCutOff - 2, width - widthCutoff, BorderType.SolidBorder, headerText: "   GAME LOGS");
             return true;
         }
@@ -193,7 +191,7 @@ internal class ConsoleRenderer
         {
             var heightOffset = heightCutOff;
             var widthOffset = 0;
-            RenderTextInBoxWithOffset(overviewText, width, consoleLine, sb, consoleCharacter, heightOffset, widthOffset,
+            ConsoleTextBoxRenderer.RenderTextBox(overviewText, width, consoleLine, sb, consoleCharacter, heightOffset, widthOffset,
                 height - heightCutOff - 2, widthCutoff, BorderType.SolidBorder, headerText: "   OVERVIEW");
             return true;
         }
@@ -201,116 +199,10 @@ internal class ConsoleRenderer
         return false;
     }
 
-    private static void RenderTextInBoxWithOffset(
-        string[] bodyText,
-        int width,
-        int consoleLine,
-        StringBuilder sb,
-        int consoleCharacter,
-        int heightOffset,
-        int widthOffset,
-        int heightCutoff,
-        int widthCutoff,
-        BorderType borderType = BorderType.NoBorder,
-        string? headerText = default,
-        string? footerText = default,
-        int textTopMargin = 0,
-        int textLeftMargin = 0,
-        int bodyTextScrollHeight = 0,
-        TextLayoutType textLayout = TextLayoutType.TopLeft)
+    private static int ClampMainDisplayScroll(int linesOfText, int effectiveHeightOfTextBox)
     {
-        int localizedLine = consoleLine - heightOffset;
-        int localizedCharacter = consoleCharacter - widthOffset;
-
-        // box outline
-        if (borderType != BorderType.NoBorder)
-        {
-            if (localizedCharacter is 0 && localizedLine is 0)
-            {
-                sb.Append('╔');
-                return;
-            }
-            if (localizedCharacter is 0 && localizedLine == heightCutoff)
-            {
-                sb.Append('╚');
-                return;
-            }
-            if (localizedCharacter == widthCutoff - 1 && localizedLine is 0)
-            {
-                sb.Append('╗');
-                return;
-            }
-            if (localizedCharacter == widthCutoff - 1 && localizedLine == heightCutoff)
-            {
-                sb.Append('╝');
-                return;
-            }
-            if (localizedCharacter is 0 || localizedCharacter == widthCutoff - 1)
-            {
-                sb.Append('║');
-                return;
-            }
-            if (localizedLine is 0)
-            {
-                if (headerText != null &&
-                    localizedCharacter < (headerText.Length + 1) &&
-                    !char.IsWhiteSpace(headerText[localizedCharacter - 1]))
-                {
-                    sb.Append(headerText[localizedCharacter - 1]);
-                }
-                else
-                {
-                    sb.Append('═');
-                }
-                return;
-            }
-            if (localizedLine == heightCutoff)
-            {
-                sb.Append('═');
-                return;
-            }
-
-            localizedLine = consoleLine - heightOffset - 1;
-            localizedCharacter = consoleCharacter - widthOffset - 1;
-        }
-
-        int characterOffset = 0;
-        if (textLayout == TextLayoutType.TopCenter &&
-            localizedLine >= textTopMargin &&
-            (localizedLine - textTopMargin + bodyTextScrollHeight) < bodyText.Length)
-        {
-            string bodyTextLine = bodyText[localizedLine - textTopMargin + bodyTextScrollHeight];
-            characterOffset = (widthCutoff / 2) - (bodyTextLine.Length / 2);
-            characterOffset = Math.Max(characterOffset, 0);
-        }
-
-        if (localizedLine == heightCutoff - 2 &&
-            footerText is not null &&
-            localizedCharacter >= textLeftMargin)
-        {
-            if ((localizedCharacter - textLeftMargin) < footerText.Length)
-            {
-                char ch = footerText[localizedCharacter - textLeftMargin];
-                sb.Append(char.IsWhiteSpace(ch) ? ' ' : ch);
-            }
-            else
-            {
-                sb.Append(' ');
-            }
-
-        }
-        else if (consoleCharacter < width - 1 &&
-            (localizedCharacter - characterOffset) >= textLeftMargin &&
-            localizedLine >= textTopMargin &&
-            (localizedLine - textTopMargin + bodyTextScrollHeight) < bodyText.Length &&
-            (localizedCharacter - characterOffset - textLeftMargin) < bodyText[localizedLine - textTopMargin + bodyTextScrollHeight].Length)
-        {
-            char ch = bodyText[localizedLine - textTopMargin + bodyTextScrollHeight][localizedCharacter - characterOffset - textLeftMargin];
-            sb.Append(char.IsWhiteSpace(ch) ? ' ' : ch);
-        }
-        else
-        {
-            sb.Append(' ');
-        }
+        int mainDisplayScroll = Math.Clamp(GameGlobals.MainDisplayScrollHeight, 0, Math.Max(0, linesOfText - effectiveHeightOfTextBox));
+        GameGlobals.MainDisplayScrollHeight = mainDisplayScroll;
+        return mainDisplayScroll;
     }
 }
