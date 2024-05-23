@@ -1,4 +1,5 @@
-﻿using Main.Entities.Base;
+﻿using Main.DebugUtils;
+using Main.Entities.Base;
 using Main.Entities.Buildings;
 using Main.Items;
 using Main.Items.Decorative;
@@ -57,6 +58,8 @@ internal class GameBaker
                     $"{(person.Health < 40 ? "Feeling sickly. " : "")}{(person.Hunger > 50 ? "Feeling very hungry. " : "")}" +
                     $"{(person.IsAlive ? "" : "Passed away...")}");
         }
+
+        stringList.AddRange(DebugTextGenerator.GetFillerStrings(100));
 
         return stringList.ToArray();
     }

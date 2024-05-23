@@ -36,9 +36,8 @@ internal class VictoryScreenMenu : Menu
             >= 15 and < 30 => "That's a lot of statues!",
             >= 30 and < 50 => "Where do you keep all of these? Wow!",
             >= 50 and < 80 => "A true treasure hoard, to be sure. Incredible work!",
-            >= 80 and < 120 => "Keep working this hard and you'll be world reknowned!",
+            >= 80 and < 120 => "Keep working this hard and you'll be world renowned!",
             >= 120 => "How did you... do that? Truly impressive."
-
         };
 
         menuBody.Add(flavorText);
