@@ -7,3 +7,10 @@ This is the code for a simple console simulation game, Statue Hoard. Build farms
 ## To Play
 
 Build and run Main.csproj. That's it!
+
+## Future Development
+
+- [ ] Swap to an Entity Component System
+- [ ] Save game state to file and load game state from file
+- [ ] Implement coordinate system
+- [ ] Load game content from file
