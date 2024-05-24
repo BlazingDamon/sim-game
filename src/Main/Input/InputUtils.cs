@@ -1,5 +1,4 @@
-﻿using Main.DebugUtils;
-using Main.Menus;
+﻿using Main.Menus;
 using Main.Menus.Base;
 
 namespace Main;
@@ -78,6 +77,9 @@ internal class InputUtils
                     break;
                 case ConsoleKey.F1:
                     GameGlobals.IsDebugModeEnabled = !GameGlobals.IsDebugModeEnabled;
+                    break;
+                case ConsoleKey.F2:
+                    MenuUtils.TryOpenMenuNoDuplicates<MainDebugMenu>();
                     break;
                 default:
                     break;

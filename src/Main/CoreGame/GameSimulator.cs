@@ -12,6 +12,10 @@ internal class GameSimulator
     {
         GameGlobals.CurrentGameState.FramesPassed++;
         sw.Restart();
+        foreach (var system in GameGlobals.CurrentGameState.Systems2.GetGameSystems())
+        {
+            system.RunSimulationFrame();
+        }
 
         foreach (var system in GameGlobals.CurrentGameState.Systems)
         {

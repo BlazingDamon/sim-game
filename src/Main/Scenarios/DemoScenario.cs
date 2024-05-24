@@ -1,4 +1,5 @@
-﻿using Main.Items.Food;
+﻿using Main.CoreGame.Base;
+using Main.Items.Food;
 using Main.Items.Material;
 using Main.Menus;
 using Main.Systems.Events;
@@ -15,6 +16,12 @@ internal class DemoScenario : IScenario
 
     private static void InitializePeopleList()
     {
+        #region ECS scenario
+        GameGlobals.CurrentGameState.Systems2.Register(new EventSystemECS());
+        GameGlobals.CurrentGameState.Entities.Register(new Entity());
+
+        #endregion
+
         GameGlobals.CurrentGameState.Systems.AddRange(
             new List<ISimulated>
             {
