@@ -1,5 +1,5 @@
-﻿namespace Main.DebugUtils;
-internal static class DebugTextGenerator
+﻿namespace Main.Utils;
+internal class TestDataGenerator
 {
     public static string[] GetFillerStrings(int numberOfLines)
     {

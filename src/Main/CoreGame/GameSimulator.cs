@@ -1,10 +1,17 @@
-﻿namespace Main;
+﻿using Main.DebugUtils;
+using Main.DebugUtils.Models;
+using System.Diagnostics;
+
+namespace Main;
 
 internal class GameSimulator
 {
+    private static Stopwatch sw = new();
+
     public static void RunFrame()
     {
         GameGlobals.CurrentGameState.FramesPassed++;
+        sw.Restart();
 
         foreach (var system in GameGlobals.CurrentGameState.Systems)
         {
@@ -20,5 +27,13 @@ internal class GameSimulator
         {
             simEntity.RunSimulationFrame();
         }
+
+        sw.Stop();
+
+        GameDebugStats.WriteFrameTimeStats(
+            new FrameTimeStats
+            {
+                SimulationTimeInNanoseconds = sw.Elapsed.Nanoseconds
+            });
     }
 }

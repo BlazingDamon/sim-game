@@ -1,11 +1,11 @@
-﻿using Main.DebugUtils;
-using Main.Entities.Base;
+﻿using Main.Entities.Base;
 using Main.Entities.Buildings;
 using Main.Items;
 using Main.Items.Decorative;
 using Main.Items.Food.Base;
 using Main.Items.Material;
 using Main.Systems.Jobs;
+using Main.Utils;
 
 namespace Main;
 
@@ -59,7 +59,7 @@ internal class GameBaker
                     $"{(person.IsAlive ? "" : "Passed away...")}");
         }
 
-        stringList.AddRange(DebugTextGenerator.GetFillerStrings(100));
+        //stringList.AddRange(TestDataGenerator.GetFillerStrings(100));
 
         return stringList.ToArray();
     }
