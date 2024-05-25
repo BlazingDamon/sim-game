@@ -6,8 +6,6 @@ using Main.Items.Decorative;
 using Main.Items.Food.Base;
 using Main.Items.Material;
 using Main.Systems.Jobs;
-using Main.Utils;
-using System;
 
 namespace Main;
 
@@ -63,15 +61,15 @@ internal class GameBaker
 
         stringList.Add("");
 
-        int numberOfBuildingsECS = GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(BuildingECS)).Count;
+        int numberOfBuildingsECS = GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count;
         stringList.Add($"Current Buildings ({numberOfBuildingsECS})");
-        stringList.Add($"Farms:            {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Item2).BuildingType == BuildingType.Farm),2}");
+        stringList.Add($"Farms:            {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Farm),2}");
 
-        foreach (var entityComponentPair in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job)))
+        foreach (var entityWithComponents in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job)))
         {
-            Health health = entityComponentPair.Item2.OfType<Health>().Single();
-            Hunger hunger = entityComponentPair.Item2.OfType<Hunger>().Single();
-            Job job = entityComponentPair.Item2.OfType<Job>().Single();
+            Health health = entityWithComponents.Components.OfType<Health>().Single();
+            Hunger hunger = entityWithComponents.Components.OfType<Hunger>().Single();
+            Job job = entityWithComponents.Components.OfType<Job>().Single();
             stringList.Add($"Age: {health.AgeInYears:0} years. " +
                 $"Occupation: {(job.CurrentJob is null ? "resting" : $"{job.CurrentJob.PlainName}")}. " +
                 $"{(health.HealthPoints < 40 ? "Feeling sickly. " : "")}{(hunger.HungerPoints > 50 ? "Feeling very hungry. " : "")}" +

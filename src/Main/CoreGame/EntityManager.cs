@@ -15,12 +15,12 @@ internal class EntityManager
         return _entities[id];
     }
 
-    public List<(ulong, IGameComponent)> QueryByType(Type type)
+    public List<EntityComponent> QueryByType(Type type)
     {
-        return GameGlobals.CurrentGameState.Components.GetComponents(type);
+        return GameGlobals.CurrentGameState.Components.GetEntityComponents(type);
     } 
 
-    public List<(ulong, List<IGameComponent>)> QueryByTypes(params Type[] types)
+    public List<EntityComponents> QueryByTypes(params Type[] types)
     {
         return GameGlobals.CurrentGameState.Components.GetEntitiesWithMatchingComponents(types); 
     }

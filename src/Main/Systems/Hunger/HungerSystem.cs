@@ -12,10 +12,10 @@ internal class HungerSystem : GameSystem
     {
         foreach (var healthPair in _componentDictionary[typeof(Components.Health)])
         {
-            var hungerPair = _componentDictionary[typeof(Components.Hunger)].Single(x => x.Item1 == healthPair.Item1);
+            var hungerPair = _componentDictionary[typeof(Components.Hunger)].Single(x => x.EntityId == healthPair.EntityId);
 
-            Components.Health health = (Components.Health)healthPair.Item2;
-            Components.Hunger hunger = (Components.Hunger)hungerPair.Item2;
+            Components.Health health = (Components.Health)healthPair.Component;
+            Components.Hunger hunger = (Components.Hunger)hungerPair.Component;
 
             if (health.IsAlive)
             {

@@ -1,29 +1,28 @@
 ﻿using Main.CoreGame.Base;
-using System.Collections.Generic;
 
 namespace Main.CoreGame;
 internal class ComponentManager
 {
-    private Dictionary<Type, List<(ulong, IGameComponent)>> _components = new();
+    private Dictionary<Type, List<EntityComponent>> _components = new();
 
     public void Register(ulong entityId, IGameComponent component)
     {
         if (_components.TryGetValue(component.GetType(), out var componentList))
         {
-            componentList.Add((entityId, component));
+            componentList.Add(new EntityComponent(entityId, component));
         }
         else
         {
-            _components[component.GetType()] = [(entityId, component)];
+            _components[component.GetType()] = [new EntityComponent(entityId, component)];
         }
     }
 
     public T? GetGameComponent<T>(ulong entityId) where T : IGameComponent
     {
-        return (T)_components[typeof(T)].FirstOrDefault(x => x.Item1 == entityId).Item2;
+        return (T?)_components[typeof(T)].FirstOrDefault(x => x.EntityId == entityId)?.Component;
     }
 
-    public List<(ulong, IGameComponent)> GetComponents(Type type)
+    public List<EntityComponent> GetEntityComponents(Type type)
     {
         if (_components.TryGetValue(type, out var componentList))
         {
@@ -36,16 +35,16 @@ internal class ComponentManager
         }
     }
 
-    public List<(ulong, List<IGameComponent>)> GetEntitiesWithMatchingComponents(params Type[] types)
+    public List<EntityComponents> GetEntitiesWithMatchingComponents(params Type[] types)
     {
         if (types.Length == 0)
             return [];
 
-        List<List<(ulong, IGameComponent)>> listOfLists = new();
+        List<List<EntityComponent>> listOfLists = new();
 
         foreach (var type in types)
         {
-            if (_components.TryGetValue(type, out List<(ulong, IGameComponent)>? componentList))
+            if (_components.TryGetValue(type, out List<EntityComponent>? componentList))
             {
                 listOfLists.Add(componentList);
             }
@@ -53,9 +52,9 @@ internal class ComponentManager
 
         return listOfLists
             .SelectMany(x => x)
-            .GroupBy(x => x.Item1)
-            .Select(n => (n.Key, n.Select(i => i.Item2).ToList()))
-            .Where(x => x.Item2.Count() == types.Length)
+            .GroupBy(x => x.EntityId)
+            .Select(n => new EntityComponents(n.Key, n.Select(i => i.Component).ToList()))
+            .Where(x => x.Components.Count() == types.Length)
             .ToList();
     }
 

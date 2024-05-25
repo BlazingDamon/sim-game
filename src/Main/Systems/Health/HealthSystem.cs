@@ -9,7 +9,7 @@ internal class HealthSystem : GameSystem
     {
         foreach (var healthPair in _componentDictionary[typeof(Components.Health)])
         {
-            Components.Health health = (Components.Health)healthPair.Item2;
+            Components.Health health = (Components.Health)healthPair.Component;
 
             if (health.IsAlive)
             {
