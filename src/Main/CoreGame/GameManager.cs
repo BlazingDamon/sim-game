@@ -18,5 +18,5 @@ internal class GameManager
     }
 
     public static ulong GenerateEntityId() =>
-        ((ulong)GameGlobals.CurrentGameState.FramesPassed * 1000) + (ulong)SequenceNumber;
+        ((ulong)GameGlobals.CurrentGameState.FramesPassed * 1000) + (ulong)SequenceNumber++;
 }

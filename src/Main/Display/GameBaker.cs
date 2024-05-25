@@ -1,4 +1,5 @@
-﻿using Main.Entities.Base;
+﻿using Main.Components;
+using Main.Entities.Base;
 using Main.Entities.Buildings;
 using Main.Items;
 using Main.Items.Decorative;
@@ -44,10 +45,10 @@ internal class GameBaker
         int peoplePopulation = GameGlobals.CurrentGameState.SimulatedEntities
             .Count(x => x is PersonEntity person && person.IsAlive);
         int peopleWithoutJobs = GameGlobals.CurrentGameState.SimulatedEntities
-            .Count(x => x is PersonEntity person && 
-                person.IsAlive && 
-                (person.CurrentJob is null || 
-                    person.CurrentJob is FoodForageJob || 
+            .Count(x => x is PersonEntity person &&
+                person.IsAlive &&
+                (person.CurrentJob is null ||
+                    person.CurrentJob is FoodForageJob ||
                     person.CurrentJob is MaterialsForageJob));
         stringList.Add($"People Overview (Population: {peoplePopulation}) ({(peopleWithoutJobs == 1 ? "1 person does not have a job" : peopleWithoutJobs + " people do not have a job")})");
         foreach (var simEntity in GameGlobals.CurrentGameState.SimulatedEntities)
@@ -57,6 +58,17 @@ internal class GameBaker
                     $"Occupation: {(person.CurrentJob is null ? "resting" : $"{person.CurrentJob.PlainName}")}. " +
                     $"{(person.Health < 40 ? "Feeling sickly. " : "")}{(person.Hunger > 50 ? "Feeling very hungry. " : "")}" +
                     $"{(person.IsAlive ? "" : "Passed away...")}");
+        }
+
+        stringList.Add("");
+
+        foreach (var entityComponentPair in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger)))
+        {
+            Health health = entityComponentPair.Item2.OfType<Health>().Single();
+            Hunger hunger = entityComponentPair.Item2.OfType<Hunger>().Single();
+            stringList.Add($"Age: {health.AgeInYears:0} years. " +
+                $"{(health.HealthPoints < 40 ? "Feeling sickly. " : "")}{(hunger.HungerPoints > 50 ? "Feeling very hungry. " : "")}" +
+                $"{(health.IsAlive ? "" : "Passed away...")}");
         }
 
         //stringList.AddRange(TestDataGenerator.GetFillerStrings(100));

@@ -1,7 +1,7 @@
 ﻿namespace Main.CoreGame.Base;
 internal abstract class GameSystem : ISimulated
 {
-    private Dictionary<Type, List<(ulong, IComponent)>> _componentDictionary = new();
+    protected Dictionary<Type, List<(ulong, IGameComponent)>> _componentDictionary = new();
 
     public GameSystem(params Type[] type)
     {

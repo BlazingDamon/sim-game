@@ -9,4 +9,14 @@ internal class EntityManager
     {
         _entities[e.Id] = e;
     }
+
+    public Entity Query(ulong id)
+    {
+        return _entities[id];
+    }
+
+    public List<(ulong, List<IGameComponent>)> QueryByTypes(params Type[] types)
+    {
+        return GameGlobals.CurrentGameState.Components.GetEntitiesWithMatchingComponents(types); 
+    }
 }

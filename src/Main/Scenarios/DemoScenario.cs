@@ -1,8 +1,12 @@
-﻿using Main.CoreGame.Base;
+﻿using Main.Components;
+using Main.CoreGame;
+using Main.CoreGame.Base;
 using Main.Items.Food;
 using Main.Items.Material;
 using Main.Menus;
 using Main.Systems.Events;
+using Main.Systems.Health;
+using Main.Systems.Hunger;
 using Main.Systems.Jobs;
 using Main.Systems.Travelers;
 
@@ -17,8 +21,16 @@ internal class DemoScenario : IScenario
     private static void InitializePeopleList()
     {
         #region ECS scenario
+
         GameGlobals.CurrentGameState.Systems2.Register(new EventSystemECS());
-        GameGlobals.CurrentGameState.Entities.Register(new Entity());
+        GameGlobals.CurrentGameState.Systems2.Register(new HealthSystem());
+        GameGlobals.CurrentGameState.Systems2.Register(new HungerSystem());
+        var p1 = GameManager.CreateEntity();
+        var p2 = GameManager.CreateEntity();
+        GameGlobals.CurrentGameState.Components.Register(p1.Id, new Health { AgeInSeconds = GameConstants.SECONDS_IN_YEAR * 42 + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) });
+        GameGlobals.CurrentGameState.Components.Register(p1.Id, new Hunger());
+        GameGlobals.CurrentGameState.Components.Register(p2.Id, new Health { AgeInSeconds = GameConstants.SECONDS_IN_YEAR * 33 + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) });
+        GameGlobals.CurrentGameState.Components.Register(p2.Id, new Hunger());
 
         #endregion
 

@@ -1,11 +1,12 @@
 ﻿using Main.CoreGame.Base;
+using System.Collections.Generic;
 
 namespace Main.CoreGame;
 internal class ComponentManager
 {
-    private Dictionary<Type, List<(ulong, IComponent)>> _components = new();
+    private Dictionary<Type, List<(ulong, IGameComponent)>> _components = new();
 
-    public void Register(ulong entityId, IComponent component)
+    public void Register(ulong entityId, IGameComponent component)
     {
         if (_components.TryGetValue(component.GetType(), out var componentList))
         {
@@ -17,7 +18,7 @@ internal class ComponentManager
         }
     }
 
-    public List<(ulong, IComponent)> GetComponents(Type type)
+    public List<(ulong, IGameComponent)> GetComponents(Type type)
     {
         if (_components.TryGetValue(type, out var componentList))
         {
@@ -29,4 +30,28 @@ internal class ComponentManager
             return _components[type];
         }
     }
+
+    public List<(ulong, List<IGameComponent>)> GetEntitiesWithMatchingComponents(params Type[] types)
+    {
+        if (types.Length == 0)
+            return [];
+
+        List<List<(ulong, IGameComponent)>> listOfLists = new();
+
+        foreach (var type in types)
+        {
+            if (_components.TryGetValue(type, out List<(ulong, IGameComponent)>? componentList))
+            {
+                listOfLists.Add(componentList);
+            }
+        }
+
+        return listOfLists
+            .SelectMany(x => x)
+            .GroupBy(x => x.Item1)
+            .Select(n => (n.Key, n.Select(i => i.Item2).ToList()))
+            .Where(x => x.Item2.Count() == types.Length)
+            .ToList();
+    }
+
 }
