@@ -64,6 +64,9 @@ internal class GameBaker
         int numberOfBuildingsECS = GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count;
         stringList.Add($"Current Buildings ({numberOfBuildingsECS})");
         stringList.Add($"Farms:            {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Farm),2}");
+        stringList.Add($"Lumber Mills:     {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.LumberMill),2}");
+        stringList.Add($"Quarries:         {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Quarry),2}");
+        stringList.Add($"Statue Workshops: {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.StatueWorkshop),2}");
 
         foreach (var entityWithComponents in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job)))
         {

@@ -26,6 +26,7 @@ internal class DemoScenario : IScenario
         GameGlobals.CurrentGameState.Systems2.Register(new HealthSystem());
         GameGlobals.CurrentGameState.Systems2.Register(new HungerSystem());
         GameGlobals.CurrentGameState.Systems2.Register(new JobSystemECS());
+        GameGlobals.CurrentGameState.Systems2.Register(new TravelerSystemECS());
         var p1 = GameManager.CreateEntity();
         var p2 = GameManager.CreateEntity();
         GameGlobals.CurrentGameState.Components.Register(p1.Id, new Health { AgeInSeconds = GameConstants.SECONDS_IN_YEAR * 42 + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) });

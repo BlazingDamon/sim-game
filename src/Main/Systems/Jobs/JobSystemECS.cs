@@ -33,7 +33,9 @@ internal class JobSystemECS : GameSystem
                         if (firstUnassignedFarm is not null)
                         {
                             var unassignedFarm = firstUnassignedFarm.Component as BuildingECS;
-                            job.CurrentJob = new BaseJobECS(unassignedFarm!.RecommendedJobPlainName, jobComponent.EntityId, unassignedFarm);
+                            var farmJob = new BaseJobECS(unassignedFarm!.RecommendedJobPlainName, jobComponent.EntityId, unassignedFarm);
+                            job.CurrentJob = farmJob;
+                            unassignedFarm.AssignedJob = farmJob;
                             allUnassignedFarms.Remove(firstUnassignedFarm);
                         }
                         else

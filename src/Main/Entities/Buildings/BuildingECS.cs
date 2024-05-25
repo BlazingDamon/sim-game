@@ -20,6 +20,18 @@ internal class BuildingECS : IGameComponent
                 BuildingType = BuildingType.Farm;
                 RecommendedJobPlainName = "working on a farm";
                 break;
+            case BuildingType.LumberMill:
+                BuildingType = BuildingType.LumberMill;
+                RecommendedJobPlainName = "sawing away at a lumber mill";
+                break;
+            case BuildingType.Quarry:
+                BuildingType = BuildingType.Quarry;
+                RecommendedJobPlainName = "digging up stone at a quarry";
+                break;
+            case BuildingType.StatueWorkshop:
+                BuildingType = BuildingType.StatueWorkshop;
+                RecommendedJobPlainName = "working on a farm";
+                break;
             case BuildingType.Unknown:
                 break;
         }

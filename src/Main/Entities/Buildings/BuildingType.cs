@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Main.Entities.Buildings;
+﻿namespace Main.Entities.Buildings;
 internal enum BuildingType
 {
     Unknown,
-    Farm
+    Farm,
+    LumberMill,
+    Quarry,
+    StatueWorkshop
 }
