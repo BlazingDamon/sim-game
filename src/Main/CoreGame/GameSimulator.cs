@@ -1,4 +1,5 @@
-﻿using Main.DebugUtils;
+﻿using Main.CoreGame;
+using Main.DebugUtils;
 using Main.DebugUtils.Models;
 using System.Diagnostics;
 
@@ -11,6 +12,8 @@ internal class GameSimulator
     public static void RunFrame()
     {
         GameGlobals.CurrentGameState.FramesPassed++;
+        GameManager.SequenceNumber = 0;
+
         sw.Restart();
         foreach (var system in GameGlobals.CurrentGameState.Systems2.GetGameSystems())
         {

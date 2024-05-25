@@ -8,7 +8,7 @@ namespace Main;
 
 internal class PersonEntity : HasHungerEntity
 {
-    public Job? CurrentJob { get; set; }
+    public BaseJob? CurrentJob { get; set; }
 
     public PersonEntity()
     {

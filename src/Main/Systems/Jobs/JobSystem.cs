@@ -20,7 +20,7 @@ internal class JobSystem : ISimulated
                     if (firstAvailablePerson.CurrentJob is not null)
                         firstAvailablePerson.CurrentJob.Unassign();
 
-                    var job = new Job(building.RecommendedJobPlainName, firstAvailablePerson, building);
+                    var job = new BaseJob(building.RecommendedJobPlainName, firstAvailablePerson, building);
                     firstAvailablePerson.CurrentJob = job;
                     building.AssignedJob = job;
                     allUnassignedPeople.Remove(firstAvailablePerson);

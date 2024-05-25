@@ -1,13 +1,13 @@
 ﻿using Main.Entities.Base;
 
 namespace Main.Systems.Jobs.Base;
-internal class Job
+internal class BaseJob
 {
     public PersonEntity AssignedPerson { get; set; }
     public Building? Building { get; set; }
     public string PlainName { get; init; }
 
-    public Job(string plainName, PersonEntity assignedPerson, Building? building = default)
+    public BaseJob(string plainName, PersonEntity assignedPerson, Building? building = default)
     {
         PlainName = plainName;
         AssignedPerson = assignedPerson;

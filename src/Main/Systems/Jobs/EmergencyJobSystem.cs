@@ -25,7 +25,7 @@ internal class EmergencyJobSystem : ISimulated
                         var firstUnassignedFarm = allUnassignedFarms.FirstOrDefault();
                         if (firstUnassignedFarm is not null)
                         {
-                            person.CurrentJob = new Job(firstUnassignedFarm.RecommendedJobPlainName, person, firstUnassignedFarm);
+                            person.CurrentJob = new BaseJob(firstUnassignedFarm.RecommendedJobPlainName, person, firstUnassignedFarm);
                             allUnassignedFarms.Remove(firstUnassignedFarm);
                         }
                         else

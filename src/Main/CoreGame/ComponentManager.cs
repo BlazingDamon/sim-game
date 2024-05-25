@@ -18,6 +18,11 @@ internal class ComponentManager
         }
     }
 
+    public T? GetGameComponent<T>(ulong entityId) where T : IGameComponent
+    {
+        return (T)_components[typeof(T)].FirstOrDefault(x => x.Item1 == entityId).Item2;
+    }
+
     public List<(ulong, IGameComponent)> GetComponents(Type type)
     {
         if (_components.TryGetValue(type, out var componentList))

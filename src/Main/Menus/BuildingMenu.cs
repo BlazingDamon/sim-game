@@ -1,4 +1,6 @@
-﻿using Main.Entities.Buildings;
+﻿using Main.Components;
+using Main.CoreGame;
+using Main.Entities.Buildings;
 using Main.Items;
 using Main.Items.Material;
 using Main.Menus.Base;
@@ -40,6 +42,8 @@ internal class BuildingMenu : Menu
                 {
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a farm.");
                     GameGlobals.CurrentGameState.Buildings.Add(new FarmBuilding());
+                    var b = GameManager.CreateEntity();
+                    GameGlobals.CurrentGameState.Components.Register(b.Id, new BuildingECS(BuildingType.Farm));
                 }
                 break;
             case ConsoleKey.L:
