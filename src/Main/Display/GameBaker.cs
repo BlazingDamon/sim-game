@@ -5,7 +5,7 @@ using Main.Items;
 using Main.Items.Decorative;
 using Main.Items.Food.Base;
 using Main.Items.Material;
-using Main.Systems.Jobs;
+using Main.Systems.JobSystems;
 
 namespace Main;
 

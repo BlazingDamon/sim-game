@@ -1,6 +1,6 @@
 ﻿using Main.Entities.Base;
 
-namespace Main.Systems.Jobs.Base;
+namespace Main.Systems.JobSystems.Base;
 internal class BaseJob
 {
     public PersonEntity AssignedPerson { get; set; }

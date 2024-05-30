@@ -1,14 +1,12 @@
-﻿using Main.Components;
-using Main.CoreGame;
-using Main.CoreGame.Base;
+﻿using Main.Entities;
 using Main.Items.Food;
 using Main.Items.Material;
 using Main.Menus;
-using Main.Systems.Events;
-using Main.Systems.Health;
-using Main.Systems.Hunger;
-using Main.Systems.Jobs;
-using Main.Systems.Travelers;
+using Main.Systems.EventSystems;
+using Main.Systems.HealthSystems;
+using Main.Systems.HungerSystems;
+using Main.Systems.JobSystems;
+using Main.Systems.TravelerSystems;
 
 namespace Main;
 internal class DemoScenario : IScenario
@@ -27,14 +25,8 @@ internal class DemoScenario : IScenario
         GameGlobals.CurrentGameState.Systems2.Register(new HungerSystem());
         GameGlobals.CurrentGameState.Systems2.Register(new JobSystemECS());
         GameGlobals.CurrentGameState.Systems2.Register(new TravelerSystemECS());
-        var p1 = GameManager.CreateEntity();
-        var p2 = GameManager.CreateEntity();
-        GameGlobals.CurrentGameState.Components.Register(p1.Id, new Health { AgeInSeconds = GameConstants.SECONDS_IN_YEAR * 42 + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) });
-        GameGlobals.CurrentGameState.Components.Register(p1.Id, new Hunger());
-        GameGlobals.CurrentGameState.Components.Register(p1.Id, new Job());
-        GameGlobals.CurrentGameState.Components.Register(p2.Id, new Health { AgeInSeconds = GameConstants.SECONDS_IN_YEAR * 33 + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) });
-        GameGlobals.CurrentGameState.Components.Register(p2.Id, new Hunger());
-        GameGlobals.CurrentGameState.Components.Register(p2.Id, new Job());
+        EntityGen.Person(42);
+        EntityGen.Person(33);
 
         #endregion
 
@@ -56,7 +48,7 @@ internal class DemoScenario : IScenario
             });
 
         var itemList = new List<Item>();
-        Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 50);
+        Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 0);
         Helpers.RunMethodManyTimes(() => itemList.Add(new WoodItem()), 10);
         Helpers.RunMethodManyTimes(() => itemList.Add(new StoneItem()), 5);
         GameGlobals.CurrentGameState.GlobalInventory.AddRange(itemList);

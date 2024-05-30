@@ -1,14 +1,18 @@
 ﻿using Main.Items.Food.Base;
 using Main.Items;
+using Main.CoreGame.Base;
+using Main.Entities;
 
-namespace Main.Systems.Travelers;
-internal class TravelerSystem : ISimulated
+namespace Main.Systems.TravelerSystems;
+internal class TravelerSystemECS : GameSystem
 {
-    public void RunSimulationFrame()
+    public TravelerSystemECS() : base(typeof(Components.Health)) { }
+
+    public override void RunSimulationFrame()
     {
         if (ISimulated.IsWeekPassedSinceLastFrame(timeOfDayInSeconds: GameConstants.SECONDS_IN_DAY / 2, dayOfWeek: 0))
         {
-            int population = GameGlobals.CurrentGameState.SimulatedEntities.OfType<PersonEntity>().Count(x => x.IsAlive);
+            int population = _componentDictionary[typeof(Components.Health)].Count(x => ((Components.Health)x.Component).IsAlive);
             if (population == 0)
                 return;
 
@@ -36,10 +40,6 @@ internal class TravelerSystem : ISimulated
 
     private void AddTravelerToPopulation()
     {
-        GameGlobals.CurrentGameState.SimulatedEntities.Add(
-            new PersonEntity
-            {
-                AgeInSeconds = GameConstants.SECONDS_IN_YEAR * GameRandom.NextInt(25, 65) + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR)
-            });
+        EntityGen.Person(GameRandom.NextInt(25, 65));
     }
 }

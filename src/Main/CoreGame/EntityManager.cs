@@ -4,6 +4,22 @@ namespace Main.CoreGame;
 internal class EntityManager
 {
     private Dictionary<ulong, Entity> _entities = new();
+    public int SequenceNumber { get; set; } = 0;
+
+    public Entity CreateEntity()
+    {
+        var e = new Entity
+        {
+            Id = GenerateEntityId()
+        };
+
+        Register(e);
+
+        return e;
+    }
+
+    public ulong GenerateEntityId() =>
+        ((ulong)GameGlobals.CurrentGameState.FramesPassed * 1000) + (ulong)SequenceNumber++;
 
     public void Register(Entity e)
     {

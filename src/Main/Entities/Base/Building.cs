@@ -1,4 +1,4 @@
-﻿using Main.Systems.Jobs.Base;
+﻿using Main.Systems.JobSystems.Base;
 
 namespace Main.Entities.Base;
 internal abstract class Building : SimulatedEntity

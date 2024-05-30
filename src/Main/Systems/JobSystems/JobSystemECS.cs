@@ -3,9 +3,12 @@ using Main.CoreGame.Base;
 using Main.Entities.Buildings;
 using Main.Items.Food.Base;
 using Main.Items;
-using Main.Systems.Jobs.Base;
+using Main.Systems.JobSystems.Base;
+using Main.Items.Food;
+using Main.Items.Material;
+using Main.Items.Decorative;
 
-namespace Main.Systems.Jobs;
+namespace Main.Systems.JobSystems;
 internal class JobSystemECS : GameSystem
 {
     public JobSystemECS() : base(typeof(Job), typeof(BuildingECS)) { }
@@ -14,13 +17,15 @@ internal class JobSystemECS : GameSystem
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            if (ItemSearcher.GetItemCount<FoodItem>() < 50)
+            if (ItemSearcher.GetItemCount<FoodItem>() < 20)
             {
                 List<EntityComponent> allUnassignedFarms = _componentDictionary[typeof(BuildingECS)]
                     .Where(x => ((BuildingECS)x.Component).AssignedJob is null)
                     .Where(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Farm)
                     .ToList();
 
+                // TODO this job component list should be filtered down based on Health.IsAlive
+                // maybe denormalize IsAlive onto the Job component somehow, to remove dependency on Health component for this system?
                 foreach (var jobComponent in _componentDictionary[typeof(Job)])
                 {
                     Job job = (Job)jobComponent.Component;
@@ -63,7 +68,7 @@ internal class JobSystemECS : GameSystem
 
             foreach (var building in allUnassignedBuildings)
             {
-                EntityComponent firstAvailableWorker = allUnassignedWorkers.FirstOrDefault();
+                EntityComponent? firstAvailableWorker = allUnassignedWorkers.FirstOrDefault();
                 if (firstAvailableWorker is not null)
                 {
                     ulong firstWorkerId = firstAvailableWorker.EntityId;
@@ -90,5 +95,70 @@ internal class JobSystemECS : GameSystem
             }
         }
 
+        IEnumerable<EntityComponent> allBuildingsWithWorkers = _componentDictionary[typeof(BuildingECS)]
+                    .Where(x => ((BuildingECS)x.Component).AssignedJob is not null);
+
+        foreach (EntityComponent buildingWithWorker in allBuildingsWithWorkers)
+        {
+            BuildingECS building = (BuildingECS)buildingWithWorker.Component;
+            if (building.AssignedJob is not null)
+            {
+                building.FramesSinceLastProduct++;
+
+                if (building.FramesSinceLastProduct * GameConfig.TimePerFrameInSeconds > building.SecondsToProduceProduct)
+                {
+                    bool productProduced = building.BuildingType switch
+                    {
+                        BuildingType.Farm => RunFarmFrame(),
+                        BuildingType.LumberMill => RunLumberMillFrame(),
+                        BuildingType.Quarry => RunQuarryFrame(),
+                        BuildingType.StatueWorkshop => RunStatueWorkshopFrame(),
+                        BuildingType.Unknown => false,
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    if (productProduced)
+                        building.FramesSinceLastProduct = 0;
+                }
+            }
+        }
+    }
+
+    public bool RunFarmFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(2, 5);
+        Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem()), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunLumberMillFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(3, 5);
+        Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new WoodItem()), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunQuarryFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(2, 4);
+        Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new StoneItem()), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunStatueWorkshopFrame()
+    {
+        if (ItemSearcher.CheckItemCountIsAtLeast<WoodItem>(40) && ItemSearcher.CheckItemCountIsAtLeast<StoneItem>(40))
+        {
+            ItemSearcher.TryUseItem<WoodItem>(10);
+            ItemSearcher.TryUseItem<StoneItem>(10);
+            GameGlobals.CurrentGameState.GlobalInventory.Add(new StatueItem());
+
+            return true;
+        }
+
+        return false;
     }
 }

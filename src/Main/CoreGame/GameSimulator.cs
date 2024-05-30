@@ -12,7 +12,7 @@ internal class GameSimulator
     public static void RunFrame()
     {
         GameGlobals.CurrentGameState.FramesPassed++;
-        GameManager.SequenceNumber = 0;
+        GameGlobals.CurrentGameState.Entities.SequenceNumber = 0;
 
         sw.Restart();
         foreach (var system in GameGlobals.CurrentGameState.Systems2.GetGameSystems())

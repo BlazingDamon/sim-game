@@ -1,8 +1,8 @@
 ﻿using Main.Items.Food;
 using Main.Items.Food.Base;
 using Main.Items.Material;
-using Main.Systems.Jobs;
-using Main.Systems.Jobs.Base;
+using Main.Systems.JobSystems;
+using Main.Systems.JobSystems.Base;
 
 namespace Main;
 

@@ -1,27 +1,28 @@
-﻿using Main.CoreGame.Base;
+﻿using Main.Components;
+using Main.CoreGame.Base;
 using Main.Items.Food.Base;
 
-namespace Main.Systems.Hunger;
+namespace Main.Systems.HungerSystems;
 internal class HungerSystem : GameSystem
 {
-    public HungerSystem() : base(typeof(Components.Health), typeof(Components.Hunger))
+    public HungerSystem() : base(typeof(Health), typeof(Hunger))
     {
     }
 
     public override void RunSimulationFrame()
     {
-        foreach (var healthPair in _componentDictionary[typeof(Components.Health)])
+        foreach (var healthPair in _componentDictionary[typeof(Health)])
         {
-            var hungerPair = _componentDictionary[typeof(Components.Hunger)].Single(x => x.EntityId == healthPair.EntityId);
+            var hungerPair = _componentDictionary[typeof(Hunger)].Single(x => x.EntityId == healthPair.EntityId);
 
-            Components.Health health = (Components.Health)healthPair.Component;
-            Components.Hunger hunger = (Components.Hunger)hungerPair.Component;
+            Health health = (Health)healthPair.Component;
+            Hunger hunger = (Hunger)hungerPair.Component;
 
             if (health.IsAlive)
             {
                 if (health.IsEntityAgeDayPassedSinceLastFrame())
                 {
-                    hunger.HungerPoints = Math.Min(100, hunger.HungerPoints+ 10);
+                    hunger.HungerPoints = Math.Min(100, hunger.HungerPoints + 10);
 
                     TryToEat(hunger);
 
@@ -34,7 +35,7 @@ internal class HungerSystem : GameSystem
         }
     }
 
-    protected void TryToEat(Components.Hunger hunger)
+    protected void TryToEat(Hunger hunger)
     {
         if (hunger.HungerPoints > 30)
         {

@@ -1,7 +1,7 @@
 ﻿using Main.Entities.Base;
-using Main.Systems.Jobs.Base;
+using Main.Systems.JobSystems.Base;
 
-namespace Main.Systems.Jobs;
+namespace Main.Systems.JobSystems;
 internal class JobSystem : ISimulated
 {
     public void RunSimulationFrame()

@@ -3,17 +3,17 @@ using Main.CoreGame.Base;
 using Main.Items.Food;
 using Main.Items.Material;
 
-namespace Main.Systems.Jobs;
+namespace Main.Systems.JobSystems;
 internal class ForageSystem : GameSystem
 {
-    public ForageSystem() : base(typeof(Components.Health), typeof(Job)) { }
+    public ForageSystem() : base(typeof(Health), typeof(Job)) { }
 
     public override void RunSimulationFrame()
     {
 
-        foreach (var healthComponent in _componentDictionary[typeof(Components.Health)])
+        foreach (var healthComponent in _componentDictionary[typeof(Health)])
         {
-            Components.Health health = (Components.Health)healthComponent.Component;
+            Health health = (Health)healthComponent.Component;
             if (health.IsAlive)
             {
                 if (health.IsEntityAgeDayPassedSinceLastFrame())

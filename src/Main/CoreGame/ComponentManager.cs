@@ -17,6 +17,21 @@ internal class ComponentManager
         }
     }
 
+    public void Register(ulong entityId, params IGameComponent[] components)
+    {
+        foreach (var component in components)
+            Register(entityId, component);
+    }
+
+    public Entity RegisterNewEntity(params IGameComponent[] components)
+    {
+        var entity = GameGlobals.CurrentGameState.Entities.CreateEntity();
+        foreach (var component in components)
+            Register(entity.Id, component);
+
+        return entity;
+    }
+
     public T? GetGameComponent<T>(ulong entityId) where T : IGameComponent
     {
         return (T?)_components[typeof(T)].FirstOrDefault(x => x.EntityId == entityId)?.Component;

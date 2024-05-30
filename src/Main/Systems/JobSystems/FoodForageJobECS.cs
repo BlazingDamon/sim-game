@@ -1,6 +1,6 @@
-﻿using Main.Systems.Jobs.Base;
+﻿using Main.Systems.JobSystems.Base;
 
-namespace Main.Systems.Jobs;
+namespace Main.Systems.JobSystems;
 internal class FoodForageJobECS : BaseJobECS
 {
     private static readonly string _plainName = "foraging for food";

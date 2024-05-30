@@ -1,7 +1,7 @@
 ﻿using Main.Components;
 using Main.Entities.Buildings;
 
-namespace Main.Systems.Jobs.Base;
+namespace Main.Systems.JobSystems.Base;
 internal class BaseJobECS
 {
     public ulong AssignedWorkerId { get; set; }

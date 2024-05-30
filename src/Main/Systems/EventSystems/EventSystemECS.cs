@@ -1,14 +1,15 @@
-﻿using Main.Items;
+﻿using Main.CoreGame.Base;
 using Main.Items.Decorative;
+using Main.Items;
 using Main.Menus;
 
-namespace Main.Systems.Events;
-internal class EventSystem : ISimulated
+namespace Main.Systems.EventSystems;
+internal class EventSystemECS : GameSystem
 {
-    private static readonly long FRAME_AT_150_DAYS = (GameConstants.SECONDS_IN_DAY * 150) / GameConfig.TimePerFrameInSeconds;
-    private static readonly long FRAME_AT_180_DAYS = (GameConstants.SECONDS_IN_DAY * 180) / GameConfig.TimePerFrameInSeconds;
+    private static readonly long FRAME_AT_150_DAYS = GameConstants.SECONDS_IN_DAY * 100 / GameConfig.TimePerFrameInSeconds;
+    private static readonly long FRAME_AT_180_DAYS = GameConstants.SECONDS_IN_DAY * 110 / GameConfig.TimePerFrameInSeconds;
 
-    public void RunSimulationFrame()
+    public override void RunSimulationFrame()
     {
         if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_150_DAYS)
         {

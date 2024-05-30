@@ -42,8 +42,7 @@ internal class BuildingMenu : Menu
                 {
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a farm.");
                     GameGlobals.CurrentGameState.Buildings.Add(new FarmBuilding());
-                    var b = GameManager.CreateEntity();
-                    GameGlobals.CurrentGameState.Components.Register(b.Id, new BuildingECS(BuildingType.Farm));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.Farm));
                 }
                 break;
             case ConsoleKey.L:
@@ -51,8 +50,7 @@ internal class BuildingMenu : Menu
                 {
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a lumber mill.");
                     GameGlobals.CurrentGameState.Buildings.Add(new LumberMillBuilding());
-                    var b = GameManager.CreateEntity();
-                    GameGlobals.CurrentGameState.Components.Register(b.Id, new BuildingECS(BuildingType.LumberMill));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.LumberMill));
                 }
                 break;
             case ConsoleKey.Q:
@@ -63,8 +61,7 @@ internal class BuildingMenu : Menu
 
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a quarry.");
                     GameGlobals.CurrentGameState.Buildings.Add(new QuarryBuilding());
-                    var b = GameManager.CreateEntity();
-                    GameGlobals.CurrentGameState.Components.Register(b.Id, new BuildingECS(BuildingType.Quarry));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.Quarry));
                 }
                 break;
             case ConsoleKey.S:
@@ -75,8 +72,7 @@ internal class BuildingMenu : Menu
 
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a statue workshop.");
                     GameGlobals.CurrentGameState.Buildings.Add(new StatueWorkshopBuilding());
-                    var b = GameManager.CreateEntity();
-                    GameGlobals.CurrentGameState.Components.Register(b.Id, new BuildingECS(BuildingType.StatueWorkshop));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.StatueWorkshop));
                 }
                 break;
             default:
