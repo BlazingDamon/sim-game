@@ -12,7 +12,6 @@ internal class GameSimulator
     public static void RunFrame()
     {
         GameGlobals.CurrentGameState.FramesPassed++;
-        GameGlobals.CurrentGameState.Entities.SequenceNumber = 0;
 
         sw.Restart();
         foreach (var system in GameGlobals.CurrentGameState.Systems2.GetGameSystems())
@@ -40,7 +39,7 @@ internal class GameSimulator
         GameDebugStats.WriteFrameTimeStats(
             new FrameTimeStats
             {
-                SimulationTimeInNanoseconds = sw.Elapsed.Nanoseconds
+                SimulationTimeInNanoseconds = (long)(sw.Elapsed.TotalMilliseconds * 1_000_000)
             });
     }
 }

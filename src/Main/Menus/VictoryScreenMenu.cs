@@ -30,7 +30,7 @@ internal class VictoryScreenMenu : Menu
 
         string flavorText = NumberOfStatues switch
         {
-            0 => "Although, perhaps, on second thought maybe you were working towards a different goal?",
+            0 => "Although, perhaps on second thought, maybe you were working towards a different goal?",
             < 5 => "Congratulations on honing your craft!",
             >= 5 and < 15 => "Nice work, that's a great collection you've started!",
             >= 15 and < 30 => "That's a lot of statues!",

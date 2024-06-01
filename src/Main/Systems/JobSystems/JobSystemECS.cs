@@ -7,6 +7,8 @@ using Main.Systems.JobSystems.Base;
 using Main.Items.Food;
 using Main.Items.Material;
 using Main.Items.Decorative;
+using Main.Entities;
+using Main.Entities.Materials;
 
 namespace Main.Systems.JobSystems;
 internal class JobSystemECS : GameSystem
@@ -17,7 +19,7 @@ internal class JobSystemECS : GameSystem
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            if (ItemSearcher.GetItemCount<FoodItem>() < 20)
+            if (ItemSearcher.GetEntityCount<Consumable>() < 20)
             {
                 List<EntityComponent> allUnassignedFarms = GetComponents<BuildingECS>()
                     .Where(x => x.Get<BuildingECS>().AssignedJob is null)
@@ -126,6 +128,7 @@ internal class JobSystemECS : GameSystem
     {
         int howManyProducts = GameRandom.NextInt(2, 5);
         Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem()), howManyProducts);
+        Helpers.RunMethodManyTimes(() => EntityGen.FoodItem(25), howManyProducts);
 
         return true;
     }
@@ -134,6 +137,7 @@ internal class JobSystemECS : GameSystem
     {
         int howManyProducts = GameRandom.NextInt(3, 5);
         Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new WoodItem()), howManyProducts);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Wood), howManyProducts);
 
         return true;
     }
@@ -142,17 +146,20 @@ internal class JobSystemECS : GameSystem
     {
         int howManyProducts = GameRandom.NextInt(2, 4);
         Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.GlobalInventory.Add(new StoneItem()), howManyProducts);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Stone), howManyProducts);
 
         return true;
     }
 
     public bool RunStatueWorkshopFrame()
     {
-        if (ItemSearcher.CheckItemCountIsAtLeast<WoodItem>(40) && ItemSearcher.CheckItemCountIsAtLeast<StoneItem>(40))
+        if (ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Wood, 40) &&
+            ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Stone, 40))
         {
-            ItemSearcher.TryUseItem<WoodItem>(10);
-            ItemSearcher.TryUseItem<StoneItem>(10);
-            GameGlobals.CurrentGameState.GlobalInventory.Add(new StatueItem());
+            ItemSearcher.TryUseBuildingMaterial(MaterialType.Wood, 10);
+            ItemSearcher.TryUseBuildingMaterial(MaterialType.Stone, 10);
+
+            EntityGen.NamedItem("Statue");
 
             return true;
         }

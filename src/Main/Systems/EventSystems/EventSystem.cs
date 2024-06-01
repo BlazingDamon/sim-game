@@ -13,13 +13,13 @@ internal class EventSystem : ISimulated
         if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_150_DAYS)
         {
             GameGlobals.IsSimulationRunning = false;
-            GameGlobals.MenuStack.Push(new PartWayMenu(ItemSearcher.GetItemCount<StatueItem>()));
+            GameGlobals.MenuStack.Push(new PartWayMenu(ItemSearcherOld.GetItemCount<StatueItem>()));
         }
 
         if (GameGlobals.CurrentGameState.FramesPassed == FRAME_AT_180_DAYS)
         {
             GameGlobals.IsSimulationRunning = false;
-            GameGlobals.MenuStack.Push(new VictoryScreenMenu(ItemSearcher.GetItemCount<StatueItem>()));
+            GameGlobals.MenuStack.Push(new VictoryScreenMenu(ItemSearcherOld.GetItemCount<StatueItem>()));
         }
     }
 }

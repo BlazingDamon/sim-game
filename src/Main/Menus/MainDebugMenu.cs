@@ -12,7 +12,7 @@ internal class MainDebugMenu : Menu
             [
                 "10 second averages",
                 "",
-                $"SimulationTimeInNanoseconds: {s.SimulationTimeInNanoseconds}",
+                $"SimulationTimeInMilliseconds: {s.SimulationTimeInNanoseconds / 1_000_000f:0.00}",
             ];
     }
 

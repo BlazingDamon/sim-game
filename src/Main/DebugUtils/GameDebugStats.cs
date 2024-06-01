@@ -3,7 +3,7 @@
 namespace Main.DebugUtils;
 internal class GameDebugStats
 {
-    private static BufferedArray<int> _nanosecondsPerSimulationFrame = new(1000);
+    private static BufferedArray<long> _nanosecondsPerSimulationFrame = new(1000);
 
     public static void WriteFrameTimeStats(FrameTimeStats stats)
     {
@@ -13,6 +13,6 @@ internal class GameDebugStats
     public static FrameTimeStats GetAverageFrameTimeStats(int frameCount) =>
         new FrameTimeStats
         {
-            SimulationTimeInNanoseconds = (int)_nanosecondsPerSimulationFrame.ReadTopValues(frameCount).Average(),
+            SimulationTimeInNanoseconds = (long)_nanosecondsPerSimulationFrame.ReadTopValues(frameCount).Average(),
         };
 }

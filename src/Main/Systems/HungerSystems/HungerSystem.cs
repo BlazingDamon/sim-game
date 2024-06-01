@@ -1,6 +1,5 @@
 ﻿using Main.Components;
 using Main.CoreGame.Base;
-using Main.Items.Food.Base;
 
 namespace Main.Systems.HungerSystems;
 internal class HungerSystem : GameSystem
@@ -11,9 +10,9 @@ internal class HungerSystem : GameSystem
 
     public override void RunSimulationFrame()
     {
-        foreach (var healthPair in GetComponents<Health>())
+        foreach (var hungerPair in GetComponents<Hunger>())
         {
-            var hungerPair = GetComponents<Hunger>().Single(x => x.EntityId == healthPair.EntityId);
+            var healthPair = GetComponents<Health>().Single(x => x.EntityId == hungerPair.EntityId);
 
             Health health = healthPair.Get<Health>();
             Hunger hunger = hungerPair.Get<Hunger>();
@@ -39,12 +38,12 @@ internal class HungerSystem : GameSystem
     {
         if (hunger.HungerPoints > 30)
         {
-            FoodItem? firstFood = GameGlobals.CurrentGameState.GlobalInventory.OfType<FoodItem>().FirstOrDefault();
+            EntityComponent? firstConsumable = GameGlobals.CurrentGameState.Components.GetEntityComponents<Consumable>().FirstOrDefault();
 
-            if (firstFood is not null)
+            if (firstConsumable is not null)
             {
-                hunger.HungerPoints = Math.Max(0, hunger.HungerPoints - firstFood.HungerRestored + GameRandom.NextInt(2));
-                GameGlobals.CurrentGameState.GlobalInventory.Remove(firstFood);
+                hunger.HungerPoints = Math.Max(0, hunger.HungerPoints - firstConsumable.Get<Consumable>().HungerRestored + GameRandom.NextInt(2));
+                GameGlobals.CurrentGameState.Entities.DeleteEntity(firstConsumable.EntityId);
             }
         }
     }

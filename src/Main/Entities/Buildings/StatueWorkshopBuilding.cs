@@ -20,10 +20,10 @@ internal class StatueWorkshopBuilding : Building
 
             if (FramesSinceLastProduct * GameConfig.TimePerFrameInSeconds > SecondsToProduceProduct)
             {
-                if (ItemSearcher.CheckItemCountIsAtLeast<WoodItem>(40) && ItemSearcher.CheckItemCountIsAtLeast<StoneItem>(40))
+                if (ItemSearcherOld.CheckItemCountIsAtLeast<WoodItem>(40) && ItemSearcherOld.CheckItemCountIsAtLeast<StoneItem>(40))
                 {
-                    ItemSearcher.TryUseItem<WoodItem>(10);
-                    ItemSearcher.TryUseItem<StoneItem>(10);
+                    ItemSearcherOld.TryUseItem<WoodItem>(10);
+                    ItemSearcherOld.TryUseItem<StoneItem>(10);
 
                     GameGlobals.CurrentGameState.GlobalInventory.Add(new StatueItem());
                     FramesSinceLastProduct = 0;

@@ -1,6 +1,7 @@
 ﻿using Main.Components;
 using Main.Entities.Base;
 using Main.Entities.Buildings;
+using Main.Entities.Materials;
 using Main.Items;
 using Main.Items.Decorative;
 using Main.Items.Food.Base;
@@ -28,10 +29,10 @@ internal class GameBaker
         List<string> stringList = new();
         //stringList.Add($"Years Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_YEAR}");
         stringList.Add($"Current Storage");
-        stringList.Add($"Food:    {ItemSearcher.GetItemCount<FoodItem>(),3}");
-        stringList.Add($"Wood:    {ItemSearcher.GetItemCount<WoodItem>(),3}");
-        stringList.Add($"Stone:   {ItemSearcher.GetItemCount<StoneItem>(),3}");
-        stringList.Add($"Statues: {ItemSearcher.GetItemCount<StatueItem>(),3}");
+        stringList.Add($"Food:    {ItemSearcherOld.GetItemCount<FoodItem>(),3}");
+        stringList.Add($"Wood:    {ItemSearcherOld.GetItemCount<WoodItem>(),3}");
+        stringList.Add($"Stone:   {ItemSearcherOld.GetItemCount<StoneItem>(),3}");
+        stringList.Add($"Statues: {ItemSearcherOld.GetItemCount<StatueItem>(),3}");
         stringList.Add("");
         int numberOfBuildings = GameGlobals.CurrentGameState.Buildings.Count(x => x is Building);
         stringList.Add($"Current Buildings ({numberOfBuildings})");
@@ -59,6 +60,13 @@ internal class GameBaker
                     $"{(person.IsAlive ? "" : "Passed away...")}");
         }
 
+        stringList.Add("");
+
+        stringList.Add($"Current Storage");
+        stringList.Add($"Food:    {ItemSearcher.GetEntityCount<Consumable>(),3}");
+        stringList.Add($"Wood:    {ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Wood),3}");
+        stringList.Add($"Stone:   {ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Stone),3}");
+        stringList.Add($"Statues: {ItemSearcher.GetItemCountByName("Statue"),3}");
         stringList.Add("");
 
         int numberOfBuildingsECS = GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count;
@@ -90,8 +98,8 @@ internal class GameBaker
 
         stringList.Add($"Days Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_DAY,3}");
         stringList.Add($"Hour of Day: {((GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) % GameConstants.SECONDS_IN_DAY) / GameConstants.SECONDS_IN_HOUR,3}");
-        stringList.Add($"Food: {ItemSearcher.GetItemCount<FoodItem>(),3}       Wood:{ItemSearcher.GetItemCount<WoodItem>(),3}");
-        stringList.Add($"Stone:{ItemSearcher.GetItemCount<StoneItem>(),3}    Statues:{ItemSearcher.GetItemCount<StatueItem>(),3}");
+        stringList.Add($"Food: {ItemSearcherOld.GetItemCount<FoodItem>(),3}       Wood:{ItemSearcherOld.GetItemCount<WoodItem>(),3}");
+        stringList.Add($"Stone:{ItemSearcherOld.GetItemCount<StoneItem>(),3}    Statues:{ItemSearcherOld.GetItemCount<StatueItem>(),3}");
         stringList.Add($"");
         stringList.Add("For help, press [h]");
 

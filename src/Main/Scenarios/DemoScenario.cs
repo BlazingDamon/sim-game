@@ -1,4 +1,5 @@
 ﻿using Main.Entities;
+using Main.Entities.Materials;
 using Main.Items.Food;
 using Main.Items.Material;
 using Main.Menus;
@@ -24,9 +25,16 @@ internal class DemoScenario : IScenario
         GameGlobals.CurrentGameState.Systems2.Register(new HealthSystem());
         GameGlobals.CurrentGameState.Systems2.Register(new HungerSystem());
         GameGlobals.CurrentGameState.Systems2.Register(new JobSystemECS());
+        GameGlobals.CurrentGameState.Systems2.Register(new ForageSystemECS());
         GameGlobals.CurrentGameState.Systems2.Register(new TravelerSystemECS());
         EntityGen.Person(42);
         EntityGen.Person(33);
+        // load tester helper:
+        // Helpers.RunMethodManyTimes(() => EntityGen.Person(20 + GameRandom.NextInt(60)), 1000);
+
+        Helpers.RunMethodManyTimes(() => EntityGen.FoodItem(25), 50);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Wood), 10);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Stone), 5);
 
         #endregion
 
@@ -47,7 +55,7 @@ internal class DemoScenario : IScenario
                 new PersonEntity { AgeInSeconds = 86400000L * 25 + GameRandom.NextInt(GameConstants.SECONDS_IN_MONTH)},
             });
 
-        var itemList = new List<Item>();
+        var itemList = new List<BaseItem>();
         Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 0);
         Helpers.RunMethodManyTimes(() => itemList.Add(new WoodItem()), 10);
         Helpers.RunMethodManyTimes(() => itemList.Add(new StoneItem()), 5);

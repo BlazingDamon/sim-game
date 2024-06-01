@@ -50,6 +50,19 @@ internal class ComponentManager
         }
     }
 
+    public List<EntityComponent> GetEntityComponents<T>()
+    {
+        if (_components.TryGetValue(typeof(T), out var componentList))
+        {
+            return componentList;
+        }
+        else
+        {
+            _components[typeof(T)] = new();
+            return _components[typeof(T)];
+        }
+    }
+
     public List<EntityComponents> GetEntitiesWithMatchingComponents(params Type[] types)
     {
         if (types.Length == 0)

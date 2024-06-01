@@ -1,16 +1,15 @@
 ﻿using Main.Components;
 using Main.CoreGame.Base;
-using Main.Items.Food;
-using Main.Items.Material;
+using Main.Entities;
+using Main.Entities.Materials;
 
 namespace Main.Systems.JobSystems;
-internal class ForageSystem : GameSystem
+internal class ForageSystemECS : GameSystem
 {
-    public ForageSystem() : base(typeof(Health), typeof(Job)) { }
+    public ForageSystemECS() : base(typeof(Health), typeof(Job)) { }
 
     public override void RunSimulationFrame()
     {
-
         foreach (var healthComponent in GetComponents<Health>())
         {
             Health health = healthComponent.Get<Health>();
@@ -19,23 +18,23 @@ internal class ForageSystem : GameSystem
                 if (health.IsEntityAgeDayPassedSinceLastFrame())
                 {
                     var jobComponent = GetComponents<Job>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Job>();
-                    if (jobComponent is null)
+                    if (jobComponent is null || jobComponent.CurrentJob is null)
                         continue;
 
                     if (jobComponent.CurrentJob is FoodForageJobECS && GameRandom.NextInt(3) > 1)
                     {
-                        GameGlobals.CurrentGameState.GlobalInventory.Add(new FarmedFoodItem());
+                        EntityGen.FoodItem(25);
                     }
                     else if (jobComponent.CurrentJob is MaterialsForageJobECS)
                     {
                         int random = GameRandom.NextInt(100);
                         if (random > 75)
                         {
-                            GameGlobals.CurrentGameState.GlobalInventory.Add(new StoneItem());
+                            EntityGen.BuildingMaterialItem(MaterialType.Stone);
                         }
                         else if (random > 25)
                         {
-                            GameGlobals.CurrentGameState.GlobalInventory.Add(new WoodItem());
+                            EntityGen.BuildingMaterialItem(MaterialType.Wood);
                         }
                     }
                 }

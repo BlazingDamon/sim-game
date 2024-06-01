@@ -12,7 +12,7 @@ internal class TravelerSystem : ISimulated
             if (population == 0)
                 return;
 
-            int foodCount = ItemSearcher.GetItemCount<FoodItem>();
+            int foodCount = ItemSearcherOld.GetItemCount<FoodItem>();
             int foodStockpileRatio = foodCount / population;
             if (foodStockpileRatio > 8)
             {

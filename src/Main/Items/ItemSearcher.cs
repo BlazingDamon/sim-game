@@ -1,34 +1,51 @@
-﻿namespace Main.Items;
+﻿using Main.Components;
+using Main.CoreGame.Base;
+using Main.Entities.Materials;
+
+namespace Main.Items;
 internal static class ItemSearcher
 {
-    public static int GetItemCount<T>() where T : Item =>
-        GameGlobals.CurrentGameState.GlobalInventory.Count(x => x is T);
+    public static int GetEntityCount<T>() where T : IGameComponent =>
+        GameGlobals.CurrentGameState.Components.GetEntityComponents<T>().Count;
 
-    public static bool CheckItemCountIsAtLeast<T>(int checkCount) where T : Item
+    public static int GetItemCountByName(string name) =>
+        GameGlobals.CurrentGameState.Components.GetEntityComponents<Item>()
+            .Count(x => x.Get<Item>().Name == name);
+
+    public static int GetBuildingMaterialCountByMaterialType(MaterialType materialType) =>
+        GameGlobals.CurrentGameState.Components.GetEntityComponents<BuildingMaterial>()
+            .Count(x => x.Get<BuildingMaterial>().MaterialType == materialType);
+
+    public static bool CheckBuildingMaterialCountIsAtLeast(MaterialType materialType, int checkCount)
     {
         var currentCount = 0;
-        GameGlobals.CurrentGameState.GlobalInventory
+        GameGlobals.CurrentGameState.Components.GetEntityComponents<BuildingMaterial>()
+            .Where(x => x.Get<BuildingMaterial>().MaterialType == materialType)
             .TakeWhile(x =>
             {
-                if (x is T)
-                    currentCount += 1;
+                currentCount += 1;
+
                 return currentCount < checkCount;
             }).ToList();
 
         return currentCount >= checkCount;
     }
 
-    public static bool TryUseItem<T>(int count = 1) where T : Item
+    public static bool TryUseBuildingMaterial(MaterialType materialType, int count = 1)
     {
-        if (!CheckItemCountIsAtLeast<T>(count))
+        if (!CheckBuildingMaterialCountIsAtLeast(materialType, count))
             return false;
 
         int usedItems = 0;
-        while (usedItems < count)
+        List<EntityComponent> buildingMaterials = GameGlobals.CurrentGameState.Components
+            .GetEntityComponents<BuildingMaterial>()
+            .Where(x => x.Get<BuildingMaterial>().MaterialType == materialType)
+            .ToList();
+        while (usedItems < count && usedItems < buildingMaterials.Count)
         {
-            Item foundItem = GameGlobals.CurrentGameState.GlobalInventory.First(x => x is T);
+            EntityComponent foundMaterial = buildingMaterials[usedItems];
             usedItems++;
-            GameGlobals.CurrentGameState.GlobalInventory.Remove(foundItem);
+            GameGlobals.CurrentGameState.Entities.DeleteEntity(foundMaterial.EntityId);
         }
 
         return true;
