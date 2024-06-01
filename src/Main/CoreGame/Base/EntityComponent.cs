@@ -9,4 +9,9 @@ internal class EntityComponent
 
     public ulong EntityId { get; init; }
     public IGameComponent Component { get; init; }
+
+    public T Get<T>() where T : IGameComponent
+    {
+        return (T)Component;
+    }
 }

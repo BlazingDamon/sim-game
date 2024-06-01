@@ -11,12 +11,12 @@ internal class HungerSystem : GameSystem
 
     public override void RunSimulationFrame()
     {
-        foreach (var healthPair in _componentDictionary[typeof(Health)])
+        foreach (var healthPair in GetComponents<Health>())
         {
-            var hungerPair = _componentDictionary[typeof(Hunger)].Single(x => x.EntityId == healthPair.EntityId);
+            var hungerPair = GetComponents<Hunger>().Single(x => x.EntityId == healthPair.EntityId);
 
-            Health health = (Health)healthPair.Component;
-            Hunger hunger = (Hunger)hungerPair.Component;
+            Health health = healthPair.Get<Health>();
+            Hunger hunger = hungerPair.Get<Hunger>();
 
             if (health.IsAlive)
             {

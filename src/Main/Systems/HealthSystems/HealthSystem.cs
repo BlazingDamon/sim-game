@@ -8,9 +8,9 @@ internal class HealthSystem : GameSystem
 
     public override void RunSimulationFrame()
     {
-        foreach (var healthPair in _componentDictionary[typeof(Health)])
+        foreach (var healthPair in GetComponents<Health>())
         {
-            Health health = (Health)healthPair.Component;
+            Health health = healthPair.Get<Health>();
 
             if (health.IsAlive)
             {
@@ -64,6 +64,8 @@ internal class HealthSystem : GameSystem
     private void DoDeath(ulong entityId)
     {
         Job? job = GameGlobals.CurrentGameState.Components.GetGameComponent<Job>(entityId);
-        job?.CurrentJob?.Unassign();
+        job?.CurrentJob?.Unassign(job);
+        GameGlobals.CurrentGameState.Components.DeleteComponent<Job>(entityId);
+        GameGlobals.CurrentGameState.Components.DeleteComponent<Hunger>(entityId);
     }
 }

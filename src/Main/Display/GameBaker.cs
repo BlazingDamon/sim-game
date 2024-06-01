@@ -63,16 +63,16 @@ internal class GameBaker
 
         int numberOfBuildingsECS = GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count;
         stringList.Add($"Current Buildings ({numberOfBuildingsECS})");
-        stringList.Add($"Farms:            {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Farm),2}");
-        stringList.Add($"Lumber Mills:     {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.LumberMill),2}");
-        stringList.Add($"Quarries:         {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Quarry),2}");
-        stringList.Add($"Statue Workshops: {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => ((BuildingECS)x.Component).BuildingType == BuildingType.StatueWorkshop),2}");
+        stringList.Add($"Farms:            {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => x.Get<BuildingECS>().BuildingType == BuildingType.Farm), 2}");
+        stringList.Add($"Lumber Mills:     {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => x.Get<BuildingECS>().BuildingType == BuildingType.LumberMill), 2}");
+        stringList.Add($"Quarries:         {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => x.Get<BuildingECS>().BuildingType == BuildingType.Quarry), 2}");
+        stringList.Add($"Statue Workshops: {GameGlobals.CurrentGameState.Entities.QueryByType(typeof(BuildingECS)).Count(x => x.Get<BuildingECS>().BuildingType == BuildingType.StatueWorkshop), 2}");
 
         foreach (var entityWithComponents in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job)))
         {
-            Health health = entityWithComponents.Components.OfType<Health>().Single();
-            Hunger hunger = entityWithComponents.Components.OfType<Hunger>().Single();
-            Job job = entityWithComponents.Components.OfType<Job>().Single();
+            Health health = entityWithComponents.Get<Health>();
+            Hunger hunger = entityWithComponents.Get<Hunger>();
+            Job job = entityWithComponents.Get<Job>();
             stringList.Add($"Age: {health.AgeInYears:0} years. " +
                 $"Occupation: {(job.CurrentJob is null ? "resting" : $"{job.CurrentJob.PlainName}")}. " +
                 $"{(health.HealthPoints < 40 ? "Feeling sickly. " : "")}{(hunger.HungerPoints > 50 ? "Feeling very hungry. " : "")}" +

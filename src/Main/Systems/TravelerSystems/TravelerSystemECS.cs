@@ -2,17 +2,18 @@
 using Main.Items;
 using Main.CoreGame.Base;
 using Main.Entities;
+using Main.Components;
 
 namespace Main.Systems.TravelerSystems;
 internal class TravelerSystemECS : GameSystem
 {
-    public TravelerSystemECS() : base(typeof(Components.Health)) { }
+    public TravelerSystemECS() : base(typeof(Health)) { }
 
     public override void RunSimulationFrame()
     {
         if (ISimulated.IsWeekPassedSinceLastFrame(timeOfDayInSeconds: GameConstants.SECONDS_IN_DAY / 2, dayOfWeek: 0))
         {
-            int population = _componentDictionary[typeof(Components.Health)].Count(x => ((Components.Health)x.Component).IsAlive);
+            int population = GetComponents<Health>().Count(x => x.Get<Health>().IsAlive);
             if (population == 0)
                 return;
 

@@ -9,4 +9,9 @@ internal class EntityComponents
 
     public ulong EntityId { get; init; }
     public List<IGameComponent> Components { get; init; }
+
+    public T Get<T>() where T : IGameComponent
+    {
+        return Components.OfType<T>().Single();
+    }
 }

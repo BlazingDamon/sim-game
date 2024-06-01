@@ -73,4 +73,20 @@ internal class ComponentManager
             .ToList();
     }
 
+    public void DeleteComponent<T>(ulong entityId) where T : IGameComponent
+    {
+        int index = _components[typeof(T)].FindIndex(x => x.EntityId == entityId);
+        if (index >= 0)
+            _components[typeof(T)].RemoveAt(index);
+    }
+
+    public void DeleteEntityComponents(ulong entityId)
+    {
+        foreach (var componentList in _components.Values)
+        {
+            int index = componentList.FindIndex(x => x.EntityId == entityId);
+            if (index >= 0)
+                componentList.RemoveAt(index);
+        }
+    }
 }

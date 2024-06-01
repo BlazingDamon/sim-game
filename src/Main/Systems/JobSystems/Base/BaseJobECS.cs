@@ -15,11 +15,9 @@ internal class BaseJobECS
         Building = building;
     }
 
-    public void Unassign()
+    public void Unassign(Job assignedJob)
     {
-        Job? assignedJob = GameGlobals.CurrentGameState.Components.GetGameComponent<Job>(AssignedWorkerId);
-        if (assignedJob != null)
-            assignedJob.CurrentJob = null;
+        assignedJob.CurrentJob = null;
         
         if (Building?.AssignedJob is not null)
             Building.AssignedJob = null;

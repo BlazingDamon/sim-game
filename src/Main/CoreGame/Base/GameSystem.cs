@@ -1,7 +1,7 @@
 ﻿namespace Main.CoreGame.Base;
 internal abstract class GameSystem : ISimulated
 {
-    protected Dictionary<Type, List<EntityComponent>> _componentDictionary = new();
+    private Dictionary<Type, List<EntityComponent>> _componentDictionary = new();
 
     public GameSystem(params Type[] types)
     {
@@ -12,4 +12,9 @@ internal abstract class GameSystem : ISimulated
     }
 
     public abstract void RunSimulationFrame();
+
+    public List<EntityComponent> GetComponents<T>() where T : IGameComponent
+    {
+        return _componentDictionary[typeof(T)];
+    }
 }

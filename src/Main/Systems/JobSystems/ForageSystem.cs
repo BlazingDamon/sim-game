@@ -11,14 +11,14 @@ internal class ForageSystem : GameSystem
     public override void RunSimulationFrame()
     {
 
-        foreach (var healthComponent in _componentDictionary[typeof(Health)])
+        foreach (var healthComponent in GetComponents<Health>())
         {
-            Health health = (Health)healthComponent.Component;
+            Health health = healthComponent.Get<Health>();
             if (health.IsAlive)
             {
                 if (health.IsEntityAgeDayPassedSinceLastFrame())
                 {
-                    var jobComponent = (Job?)_componentDictionary[typeof(Job)].FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Component;
+                    var jobComponent = GetComponents<Job>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Job>();
                     if (jobComponent is null)
                         continue;
 

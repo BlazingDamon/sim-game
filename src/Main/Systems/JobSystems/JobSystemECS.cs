@@ -19,25 +19,23 @@ internal class JobSystemECS : GameSystem
         {
             if (ItemSearcher.GetItemCount<FoodItem>() < 20)
             {
-                List<EntityComponent> allUnassignedFarms = _componentDictionary[typeof(BuildingECS)]
-                    .Where(x => ((BuildingECS)x.Component).AssignedJob is null)
-                    .Where(x => ((BuildingECS)x.Component).BuildingType == BuildingType.Farm)
+                List<EntityComponent> allUnassignedFarms = GetComponents<BuildingECS>()
+                    .Where(x => x.Get<BuildingECS>().AssignedJob is null)
+                    .Where(x => x.Get<BuildingECS>().BuildingType == BuildingType.Farm)
                     .ToList();
 
-                // TODO this job component list should be filtered down based on Health.IsAlive
-                // maybe denormalize IsAlive onto the Job component somehow, to remove dependency on Health component for this system?
-                foreach (var jobComponent in _componentDictionary[typeof(Job)])
+                foreach (var jobComponent in GetComponents<Job>())
                 {
-                    Job job = (Job)jobComponent.Component;
+                    Job job = jobComponent.Get<Job>();
                     if (job.CurrentJob == null || job.CurrentJob.Building?.BuildingType != BuildingType.Farm)
                     {
                         if (job.CurrentJob is not null)
-                            job.CurrentJob.Unassign();
+                            job.CurrentJob.Unassign(job);
 
                         var firstUnassignedFarm = allUnassignedFarms.FirstOrDefault();
                         if (firstUnassignedFarm is not null)
                         {
-                            var unassignedFarm = firstUnassignedFarm.Component as BuildingECS;
+                            var unassignedFarm = firstUnassignedFarm.Get<BuildingECS>();
                             var farmJob = new BaseJobECS(unassignedFarm!.RecommendedJobPlainName, jobComponent.EntityId, unassignedFarm);
                             job.CurrentJob = farmJob;
                             unassignedFarm.AssignedJob = farmJob;
@@ -53,18 +51,18 @@ internal class JobSystemECS : GameSystem
             }
             else
             {
-                foreach (var jobPair in _componentDictionary[typeof(Job)])
+                foreach (var jobEntity in GetComponents<Job>())
                 {
-                    Job job = (Job)jobPair.Component;
+                    Job job = jobEntity.Get<Job>();
                     if (job.CurrentJob is FoodForageJobECS)
                     {
-                        job.CurrentJob.Unassign();
+                        job.CurrentJob.Unassign(job);
                     }
                 }
             }
 
-            List<EntityComponent> allUnassignedWorkers = _componentDictionary[typeof(Job)].Where(x => ((Job)x.Component).CurrentJob is null || ((Job)x.Component).CurrentJob is MaterialsForageJobECS).ToList();
-            List<EntityComponent> allUnassignedBuildings = _componentDictionary[typeof(BuildingECS)].Where(x => ((BuildingECS)x.Component).AssignedJob is null).ToList();
+            List<EntityComponent> allUnassignedWorkers = GetComponents<Job>().Where(x => x.Get<Job>().CurrentJob is null || x.Get<Job>().CurrentJob is MaterialsForageJobECS).ToList();
+            List<EntityComponent> allUnassignedBuildings = GetComponents<BuildingECS>().Where(x => x.Get<BuildingECS>().AssignedJob is null).ToList();
 
             foreach (var building in allUnassignedBuildings)
             {
@@ -72,11 +70,11 @@ internal class JobSystemECS : GameSystem
                 if (firstAvailableWorker is not null)
                 {
                     ulong firstWorkerId = firstAvailableWorker.EntityId;
-                    Job firstWorkerJob = (Job)firstAvailableWorker.Component;
+                    Job firstWorkerJob = firstAvailableWorker.Get<Job>();
                     if (firstWorkerJob.CurrentJob is not null)
-                        firstWorkerJob.CurrentJob.Unassign();
+                        firstWorkerJob.CurrentJob.Unassign(firstWorkerJob);
 
-                    var unassignedBuilding = building.Component as BuildingECS;
+                    var unassignedBuilding = building.Get<BuildingECS>();
                     var job = new BaseJobECS(unassignedBuilding!.RecommendedJobPlainName, firstWorkerId, unassignedBuilding);
                     firstWorkerJob.CurrentJob = job;
                     unassignedBuilding.AssignedJob = job;
@@ -91,16 +89,16 @@ internal class JobSystemECS : GameSystem
             foreach (var unassignedWorker in allUnassignedWorkers)
             {
                 var job = new MaterialsForageJobECS(unassignedWorker.EntityId);
-                ((Job)unassignedWorker.Component).CurrentJob = job;
+                unassignedWorker.Get<Job>().CurrentJob = job;
             }
         }
 
-        IEnumerable<EntityComponent> allBuildingsWithWorkers = _componentDictionary[typeof(BuildingECS)]
-                    .Where(x => ((BuildingECS)x.Component).AssignedJob is not null);
+        IEnumerable<EntityComponent> allBuildingsWithWorkers = GetComponents<BuildingECS>()
+                    .Where(x => x.Get<BuildingECS>().AssignedJob is not null);
 
         foreach (EntityComponent buildingWithWorker in allBuildingsWithWorkers)
         {
-            BuildingECS building = (BuildingECS)buildingWithWorker.Component;
+            BuildingECS building = buildingWithWorker.Get<BuildingECS>();
             if (building.AssignedJob is not null)
             {
                 building.FramesSinceLastProduct++;

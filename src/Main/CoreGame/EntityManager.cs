@@ -21,11 +21,6 @@ internal class EntityManager
     public ulong GenerateEntityId() =>
         ((ulong)GameGlobals.CurrentGameState.FramesPassed * 1000) + (ulong)SequenceNumber++;
 
-    public void Register(Entity e)
-    {
-        _entities[e.Id] = e;
-    }
-
     public Entity Query(ulong id)
     {
         return _entities[id];
@@ -39,5 +34,16 @@ internal class EntityManager
     public List<EntityComponents> QueryByTypes(params Type[] types)
     {
         return GameGlobals.CurrentGameState.Components.GetEntitiesWithMatchingComponents(types); 
+    }
+
+    public void DeleteEntity(ulong id)
+    {
+        GameGlobals.CurrentGameState.Components.DeleteEntityComponents(id);
+        _entities.Remove(id);
+    }
+
+    private void Register(Entity e)
+    {
+        _entities[e.Id] = e;
     }
 }
