@@ -30,7 +30,8 @@ internal class BuildingECS : IGameComponent
                 break;
             case BuildingType.StatueWorkshop:
                 BuildingType = BuildingType.StatueWorkshop;
-                RecommendedJobPlainName = "working on a farm";
+                RecommendedJobPlainName = "carefully crafting at a statue workshop";
+                SecondsToProduceProduct = GameConstants.SECONDS_IN_DAY * 3;
                 break;
             case BuildingType.Unknown:
                 break;

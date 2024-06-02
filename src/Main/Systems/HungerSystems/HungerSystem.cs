@@ -12,9 +12,20 @@ internal class HungerSystem : GameSystem
     {
         foreach (var hungerPair in GetComponents<Hunger>())
         {
-            var healthPair = GetComponents<Health>().Single(x => x.EntityId == hungerPair.EntityId);
+            // this .Single was causing many object allocations, and refactoring to a for loop helped
+            //EntityComponent healthPair = GetComponents<Health>().Single(x => x.EntityId == hungerPair.EntityId);
+            EntityComponent? healthPair = null;
+            List<EntityComponent> healthComponents = GetComponents<Health>();
+            for (var i = 0; i < healthComponents.Count; i++)
+            {
+                if (healthComponents[i].EntityId == hungerPair.EntityId)
+                {
+                    healthPair = healthComponents[i];
+                    break;
+                }
+            }
 
-            Health health = healthPair.Get<Health>();
+            Health health = healthPair!.Get<Health>();
             Hunger hunger = hungerPair.Get<Hunger>();
 
             if (health.IsAlive)

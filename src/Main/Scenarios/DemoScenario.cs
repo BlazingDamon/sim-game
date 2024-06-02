@@ -29,8 +29,9 @@ internal class DemoScenario : IScenario
         GameGlobals.CurrentGameState.Systems2.Register(new TravelerSystemECS());
         EntityGen.Person(42);
         EntityGen.Person(33);
+        EntityGen.Person(50);
         // load tester helper:
-        // Helpers.RunMethodManyTimes(() => EntityGen.Person(20 + GameRandom.NextInt(60)), 1000);
+        //Helpers.RunMethodManyTimes(() => EntityGen.Person(20 + GameRandom.NextInt(60)), 1000);
 
         Helpers.RunMethodManyTimes(() => EntityGen.FoodItem(25), 50);
         Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Wood), 10);
@@ -55,8 +56,14 @@ internal class DemoScenario : IScenario
                 new PersonEntity { AgeInSeconds = 86400000L * 25 + GameRandom.NextInt(GameConstants.SECONDS_IN_MONTH)},
             });
 
+        // load tester helper:
+        //Helpers.RunMethodManyTimes(() => GameGlobals.CurrentGameState.SimulatedEntities.Add(new PersonEntity
+        //{
+        //    AgeInSeconds = (long)GameConstants.SECONDS_IN_YEAR * GameRandom.NextInt(20, 60) + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR)
+        //}), 1000);
+
         var itemList = new List<BaseItem>();
-        Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 0);
+        Helpers.RunMethodManyTimes(() => itemList.Add(new FarmedFoodItem()), 50);
         Helpers.RunMethodManyTimes(() => itemList.Add(new WoodItem()), 10);
         Helpers.RunMethodManyTimes(() => itemList.Add(new StoneItem()), 5);
         GameGlobals.CurrentGameState.GlobalInventory.AddRange(itemList);
