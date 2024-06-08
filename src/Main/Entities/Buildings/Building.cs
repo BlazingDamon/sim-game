@@ -2,17 +2,17 @@
 using Main.Systems.JobSystems.Base;
 
 namespace Main.Entities.Buildings;
-internal class BuildingECS : IGameComponent
+internal class Building : IGameComponent
 {
     public BuildingType BuildingType { get; init; }
-    public BaseJobECS? AssignedJob { get; set; }
+    public BaseJob? AssignedJob { get; set; }
     public int FramesSinceLastProduct { get; set; }
 
     public int SecondsToProduceProduct { get; set; } = GameConstants.SECONDS_IN_DAY * 2;
 
     public string RecommendedJobPlainName { get; set; } = "working at a building";
 
-    public BuildingECS(BuildingType buildingType)
+    public Building(BuildingType buildingType)
     {
         switch (buildingType)
         {

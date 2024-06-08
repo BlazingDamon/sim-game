@@ -1,29 +1,82 @@
-﻿using Main.Entities.Base;
+﻿using Main.Components;
+using Main.CoreGame.Base;
+using Main.Entities.Buildings;
+using Main.Items;
 using Main.Systems.JobSystems.Base;
+using Main.Entities;
+using Main.Entities.Materials;
 
 namespace Main.Systems.JobSystems;
-internal class JobSystem : ISimulated
+internal class JobSystem : GameSystem
 {
-    public void RunSimulationFrame()
+    public JobSystem() : base(typeof(Job), typeof(Building)) { }
+
+    public override void RunSimulationFrame()
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            List<PersonEntity> allUnassignedPeople = GameGlobals.CurrentGameState.SimulatedEntities
-                .OfType<PersonEntity>().Where(x => x.IsAlive && (x.CurrentJob is null || x.CurrentJob is MaterialsForageJob)).ToList();
-            IEnumerable<Building> allUnassignedBuildings = GameGlobals.CurrentGameState.Buildings.OfType<Building>().Where(x => x.AssignedJob is null);
+            if (ItemSearcher.GetEntityCount<Consumable>() < 20)
+            {
+                List<EntityComponent> allUnassignedFarms = GetComponents<Building>()
+                    .Where(x => x.Get<Building>().AssignedJob is null)
+                    .Where(x => x.Get<Building>().BuildingType == BuildingType.Farm)
+                    .ToList();
+
+                foreach (var jobComponent in GetComponents<Job>())
+                {
+                    Job job = jobComponent.Get<Job>();
+                    if (job.CurrentJob == null || job.CurrentJob.Building?.BuildingType != BuildingType.Farm)
+                    {
+                        if (job.CurrentJob is not null)
+                            job.CurrentJob.Unassign(job);
+
+                        var firstUnassignedFarm = allUnassignedFarms.FirstOrDefault();
+                        if (firstUnassignedFarm is not null)
+                        {
+                            var unassignedFarm = firstUnassignedFarm.Get<Building>();
+                            var farmJob = new BaseJob(unassignedFarm!.RecommendedJobPlainName, jobComponent.EntityId, unassignedFarm);
+                            job.CurrentJob = farmJob;
+                            unassignedFarm.AssignedJob = farmJob;
+                            allUnassignedFarms.Remove(firstUnassignedFarm);
+                        }
+                        else
+                        {
+                            job.CurrentJob = new FoodForageJob(jobComponent.EntityId);
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                foreach (var jobEntity in GetComponents<Job>())
+                {
+                    Job job = jobEntity.Get<Job>();
+                    if (job.CurrentJob is FoodForageJob)
+                    {
+                        job.CurrentJob.Unassign(job);
+                    }
+                }
+            }
+
+            List<EntityComponent> allUnassignedWorkers = GetComponents<Job>().Where(x => x.Get<Job>().CurrentJob is null || x.Get<Job>().CurrentJob is MaterialsForageJob).ToList();
+            List<EntityComponent> allUnassignedBuildings = GetComponents<Building>().Where(x => x.Get<Building>().AssignedJob is null).ToList();
 
             foreach (var building in allUnassignedBuildings)
             {
-                PersonEntity? firstAvailablePerson = allUnassignedPeople.FirstOrDefault();
-                if (firstAvailablePerson is not null)
+                EntityComponent? firstAvailableWorker = allUnassignedWorkers.FirstOrDefault();
+                if (firstAvailableWorker is not null)
                 {
-                    if (firstAvailablePerson.CurrentJob is not null)
-                        firstAvailablePerson.CurrentJob.Unassign();
+                    ulong firstWorkerId = firstAvailableWorker.EntityId;
+                    Job firstWorkerJob = firstAvailableWorker.Get<Job>();
+                    if (firstWorkerJob.CurrentJob is not null)
+                        firstWorkerJob.CurrentJob.Unassign(firstWorkerJob);
 
-                    var job = new BaseJob(building.RecommendedJobPlainName, firstAvailablePerson, building);
-                    firstAvailablePerson.CurrentJob = job;
-                    building.AssignedJob = job;
-                    allUnassignedPeople.Remove(firstAvailablePerson);
+                    var unassignedBuilding = building.Get<Building>();
+                    var job = new BaseJob(unassignedBuilding!.RecommendedJobPlainName, firstWorkerId, unassignedBuilding);
+                    firstWorkerJob.CurrentJob = job;
+                    unassignedBuilding.AssignedJob = job;
+                    allUnassignedWorkers.Remove(firstAvailableWorker);
                 }
                 else
                 {
@@ -31,11 +84,79 @@ internal class JobSystem : ISimulated
                 }
             }
 
-            foreach (var unassignedPerson in allUnassignedPeople)
+            foreach (var unassignedWorker in allUnassignedWorkers)
             {
-                var job = new MaterialsForageJob(unassignedPerson);
-                unassignedPerson.CurrentJob = job;
+                var job = new MaterialsForageJob(unassignedWorker.EntityId);
+                unassignedWorker.Get<Job>().CurrentJob = job;
             }
         }
+
+        IEnumerable<EntityComponent> allBuildingsWithWorkers = GetComponents<Building>()
+                    .Where(x => x.Get<Building>().AssignedJob is not null);
+
+        foreach (EntityComponent buildingWithWorker in allBuildingsWithWorkers)
+        {
+            Building building = buildingWithWorker.Get<Building>();
+            if (building.AssignedJob is not null)
+            {
+                building.FramesSinceLastProduct++;
+
+                if (building.FramesSinceLastProduct * GameConfig.TimePerFrameInSeconds > building.SecondsToProduceProduct)
+                {
+                    bool productProduced = building.BuildingType switch
+                    {
+                        BuildingType.Farm => RunFarmFrame(),
+                        BuildingType.LumberMill => RunLumberMillFrame(),
+                        BuildingType.Quarry => RunQuarryFrame(),
+                        BuildingType.StatueWorkshop => RunStatueWorkshopFrame(),
+                        BuildingType.Unknown => false,
+                        _ => throw new NotImplementedException(),
+                    };
+
+                    if (productProduced)
+                        building.FramesSinceLastProduct = 0;
+                }
+            }
+        }
+    }
+
+    public bool RunFarmFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(2, 5);
+        Helpers.RunMethodManyTimes(() => EntityGen.FoodItem(25), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunLumberMillFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(3, 5);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Wood), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunQuarryFrame()
+    {
+        int howManyProducts = GameRandom.NextInt(2, 4);
+        Helpers.RunMethodManyTimes(() => EntityGen.BuildingMaterialItem(MaterialType.Stone), howManyProducts);
+
+        return true;
+    }
+
+    public bool RunStatueWorkshopFrame()
+    {
+        if (ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Wood, 40) &&
+            ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Stone, 40))
+        {
+            ItemSearcher.TryUseBuildingMaterial(MaterialType.Wood, 10);
+            ItemSearcher.TryUseBuildingMaterial(MaterialType.Stone, 10);
+
+            EntityGen.NamedItem("Statue");
+
+            return true;
+        }
+
+        return false;
     }
 }

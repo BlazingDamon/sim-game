@@ -1,18 +1,22 @@
-﻿using Main.Items.Food.Base;
-using Main.Items;
+﻿using Main.Items;
+using Main.CoreGame.Base;
+using Main.Entities;
+using Main.Components;
 
 namespace Main.Systems.TravelerSystems;
-internal class TravelerSystem : ISimulated
+internal class TravelerSystem : GameSystem
 {
-    public void RunSimulationFrame()
+    public TravelerSystem() : base(typeof(Health)) { }
+
+    public override void RunSimulationFrame()
     {
         if (ISimulated.IsWeekPassedSinceLastFrame(timeOfDayInSeconds: GameConstants.SECONDS_IN_DAY / 2, dayOfWeek: 0))
         {
-            int population = GameGlobals.CurrentGameState.SimulatedEntities.OfType<PersonEntity>().Count(x => x.IsAlive);
+            int population = GetComponents<Health>().Count(x => x.Get<Health>().IsAlive);
             if (population == 0)
                 return;
 
-            int foodCount = ItemSearcherOld.GetItemCount<FoodItem>();
+            int foodCount = ItemSearcher.GetEntityCount<Consumable>();
             int foodStockpileRatio = foodCount / population;
             if (foodStockpileRatio > 8)
             {
@@ -22,8 +26,8 @@ internal class TravelerSystem : ISimulated
 
                 if (numberOfTravelers == 1)
                 {
-                    GameDebugLogger.WriteLog("OLD: One traveler has arrived!");
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("OLD: One traveler has arrived!");
+                    GameDebugLogger.WriteLog("1 traveler has arrived!");
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("One traveler has arrived!");
                 }
                 else if (numberOfTravelers > 1)
                 {
@@ -36,10 +40,6 @@ internal class TravelerSystem : ISimulated
 
     private void AddTravelerToPopulation()
     {
-        GameGlobals.CurrentGameState.SimulatedEntities.Add(
-            new PersonEntity
-            {
-                AgeInSeconds = GameConstants.SECONDS_IN_YEAR * GameRandom.NextInt(25, 65) + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR)
-            });
+        EntityGen.Person(GameRandom.NextInt(25, 65));
     }
 }

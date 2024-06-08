@@ -4,9 +4,9 @@ using Main.Entities;
 using Main.Entities.Materials;
 
 namespace Main.Systems.JobSystems;
-internal class ForageSystemECS : GameSystem
+internal class ForageSystem : GameSystem
 {
-    public ForageSystemECS() : base(typeof(Health), typeof(Job)) { }
+    public ForageSystem() : base(typeof(Health), typeof(Job)) { }
 
     public override void RunSimulationFrame()
     {
@@ -21,11 +21,11 @@ internal class ForageSystemECS : GameSystem
                     if (jobComponent is null || jobComponent.CurrentJob is null)
                         continue;
 
-                    if (jobComponent.CurrentJob is FoodForageJobECS && GameRandom.NextInt(3) > 1)
+                    if (jobComponent.CurrentJob is FoodForageJob && GameRandom.NextInt(3) > 1)
                     {
                         EntityGen.FoodItem(25);
                     }
-                    else if (jobComponent.CurrentJob is MaterialsForageJobECS)
+                    else if (jobComponent.CurrentJob is MaterialsForageJob)
                     {
                         int random = GameRandom.NextInt(100);
                         if (random > 75)

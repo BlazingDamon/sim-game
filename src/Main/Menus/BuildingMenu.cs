@@ -1,7 +1,6 @@
 ﻿using Main.Entities.Buildings;
 using Main.Entities.Materials;
 using Main.Items;
-using Main.Items.Material;
 using Main.Menus.Base;
 
 namespace Main.Menus;
@@ -37,38 +36,20 @@ internal class BuildingMenu : Menu
                 GameDebugLogger.WriteLog($"Building menu exited.");
                 break;
             case ConsoleKey.F:
-                if (ItemSearcherOld.TryUseItem<WoodItem>(10))
-                {
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("OLD: Your villagers have constructed a farm.");
-                    GameGlobals.CurrentGameState.Buildings.Add(new FarmBuilding());
-                }
                 if (ItemSearcher.TryUseBuildingMaterial(MaterialType.Wood, 10))
                 {
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a farm.");
-                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.Farm));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new Building(BuildingType.Farm));
                 }
                 break;
             case ConsoleKey.L:
-                if (ItemSearcherOld.TryUseItem<StoneItem>(5))
-                {
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("OLD: Your villagers have constructed a lumber mill.");
-                    GameGlobals.CurrentGameState.Buildings.Add(new LumberMillBuilding());
-                }
                 if (ItemSearcher.TryUseBuildingMaterial(MaterialType.Stone, 5))
                 {
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a lumber mill.");
-                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.LumberMill));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new Building(BuildingType.LumberMill));
                 }
                 break;
             case ConsoleKey.Q:
-                if (ItemSearcherOld.CheckItemCountIsAtLeast<WoodItem>(10) && ItemSearcherOld.CheckItemCountIsAtLeast<StoneItem>(10))
-                {
-                    ItemSearcherOld.TryUseItem<WoodItem>(10);
-                    ItemSearcherOld.TryUseItem<StoneItem>(10);
-
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("OLD: Your villagers have constructed a quarry.");
-                    GameGlobals.CurrentGameState.Buildings.Add(new QuarryBuilding());
-                }
                 if (ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Wood, 10) && 
                     ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Stone, 10))
                 {
@@ -76,18 +57,10 @@ internal class BuildingMenu : Menu
                     ItemSearcher.TryUseBuildingMaterial(MaterialType.Stone, 10);
 
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a quarry.");
-                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.Quarry));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new Building(BuildingType.Quarry));
                 }
                 break;
             case ConsoleKey.S:
-                if (ItemSearcherOld.CheckItemCountIsAtLeast<WoodItem>(30) && ItemSearcherOld.CheckItemCountIsAtLeast<StoneItem>(30))
-                {
-                    ItemSearcherOld.TryUseItem<WoodItem>(30);
-                    ItemSearcherOld.TryUseItem<StoneItem>(30);
-
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("OLD: Your villagers have constructed a statue workshop.");
-                    GameGlobals.CurrentGameState.Buildings.Add(new StatueWorkshopBuilding());
-                }
                 if (ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Wood, 30) &&
                     ItemSearcher.CheckBuildingMaterialCountIsAtLeast(MaterialType.Stone, 30))
                 {
@@ -95,7 +68,7 @@ internal class BuildingMenu : Menu
                     ItemSearcher.TryUseBuildingMaterial(MaterialType.Stone, 30);
 
                     GameGlobals.CurrentGameState.GameLogger.WriteLog("Your villagers have constructed a statue workshop.");
-                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new BuildingECS(BuildingType.StatueWorkshop));
+                    GameGlobals.CurrentGameState.Components.RegisterNewEntity(new Building(BuildingType.StatueWorkshop));
                 }
                 break;
             default:

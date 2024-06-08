@@ -1,22 +1,23 @@
-﻿using Main.Entities.Base;
+﻿using Main.Components;
+using Main.Entities.Buildings;
 
 namespace Main.Systems.JobSystems.Base;
 internal class BaseJob
 {
-    public PersonEntity AssignedPerson { get; set; }
+    public ulong AssignedWorkerId { get; set; }
     public Building? Building { get; set; }
     public string PlainName { get; init; }
 
-    public BaseJob(string plainName, PersonEntity assignedPerson, Building? building = default)
+    public BaseJob(string plainName, ulong assignedWorkerId, Building? building = default)
     {
         PlainName = plainName;
-        AssignedPerson = assignedPerson;
+        AssignedWorkerId = assignedWorkerId;
         Building = building;
     }
 
-    public void Unassign()
+    public void Unassign(Job assignedJob)
     {
-        AssignedPerson.CurrentJob = null;
+        assignedJob.CurrentJob = null;
         
         if (Building?.AssignedJob is not null)
             Building.AssignedJob = null;

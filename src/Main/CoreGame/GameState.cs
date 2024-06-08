@@ -14,7 +14,6 @@ internal class GameState
     public List<ISimulated> SimulatedEntities { get; } = new();
     public List<ISimulated> Buildings { get; } = new();
     public List<ISimulated> Systems { get; } = new();
-    public List<BaseItem> GlobalInventory { get; } = new();
 
     public Scene CurrentScene { get; set; } = new();
 
