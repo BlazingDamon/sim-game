@@ -10,7 +10,6 @@ Build and run Main.csproj. That's it!
 
 ## Future Development
 
-- [ ] Swap to an Entity Component System
 - [ ] Save game state to file and load game state from file
 - [ ] Implement coordinate system
-- [ ] Load game content from file
+- [ ] Load additional game content, such as mods, from file
