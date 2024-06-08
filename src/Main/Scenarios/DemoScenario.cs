@@ -17,12 +17,12 @@ internal class DemoScenario : IScenario
 
     private static void InitializePeopleList()
     {
-        GameGlobals.CurrentGameState.Systems2.Register(new EventSystem());
-        GameGlobals.CurrentGameState.Systems2.Register(new HealthSystem());
-        GameGlobals.CurrentGameState.Systems2.Register(new HungerSystem());
-        GameGlobals.CurrentGameState.Systems2.Register(new JobSystem());
-        GameGlobals.CurrentGameState.Systems2.Register(new ForageSystem());
-        GameGlobals.CurrentGameState.Systems2.Register(new TravelerSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new EventSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new HealthSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new HungerSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new JobSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new ForageSystem());
+        GameGlobals.CurrentGameState.Systems.Register(new TravelerSystem());
         EntityGen.Person(42);
         EntityGen.Person(33);
         EntityGen.Person(50);

@@ -4,6 +4,8 @@ namespace Main.CoreGame;
 internal class ComponentManager
 {
     private Dictionary<Type, List<EntityComponent>> _components = new();
+    private List<Tuple<ulong, Type>> _componentsToDelete = new();
+    private List<ulong> _entitiesToDelete = new();
 
     public void Register(ulong entityId, IGameComponent component)
     {
@@ -50,11 +52,24 @@ internal class ComponentManager
         }
     }
 
-    public List<EntityComponent> GetEntityComponents<T>()
+    public List<EntityComponent> GetEntityComponents<T>() where T : IGameComponent
     {
         if (_components.TryGetValue(typeof(T), out var componentList))
         {
             return componentList;
+        }
+        else
+        {
+            _components[typeof(T)] = new();
+            return _components[typeof(T)];
+        }
+    }
+
+    public List<EntityComponent> GetEntityComponents<T>(Func<EntityComponent, bool> predicate) where T : IGameComponent
+    {
+        if (_components.TryGetValue(typeof(T), out var componentList))
+        {
+            return componentList.Where(predicate).ToList();
         }
         else
         {
@@ -88,18 +103,35 @@ internal class ComponentManager
 
     public void DeleteComponent<T>(ulong entityId) where T : IGameComponent
     {
-        int index = _components[typeof(T)].FindIndex(x => x.EntityId == entityId);
-        if (index >= 0)
-            _components[typeof(T)].RemoveAt(index);
+        _componentsToDelete.Add(new Tuple<ulong, Type>(entityId, typeof(T)));
     }
 
     public void DeleteEntityComponents(ulong entityId)
     {
-        foreach (var componentList in _components.Values)
+        _entitiesToDelete.Add(entityId);
+    }
+
+    public void FinalizeFrame()
+    {
+        foreach (Tuple<ulong, Type> tuple in _componentsToDelete)
         {
-            int index = componentList.FindIndex(x => x.EntityId == entityId);
+            int index = _components[tuple.Item2].FindIndex(x => x.EntityId == tuple.Item1);
             if (index >= 0)
-                componentList.RemoveAt(index);
+                _components[tuple.Item2].RemoveAt(index);
         }
+
+        _componentsToDelete = [];
+
+        foreach (ulong entityId in _entitiesToDelete)
+        {
+            foreach (List<EntityComponent> componentList in _components.Values)
+            {
+                int index = componentList.FindIndex(x => x.EntityId == entityId);
+                if (index >= 0)
+                    componentList.RemoveAt(index);
+            }
+        }
+
+        _entitiesToDelete = [];
     }
 }

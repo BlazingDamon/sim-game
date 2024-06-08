@@ -16,7 +16,7 @@ internal class TravelerSystem : GameSystem
             if (population == 0)
                 return;
 
-            int foodCount = ItemSearcher.GetEntityCount<Consumable>();
+            int foodCount = ItemSearcher.GetEntityCount<Consumable>(x => x.Get<Consumable>().IsConsumed == false && x.Get<Consumable>().HungerRestored > 0);
             int foodStockpileRatio = foodCount / population;
             if (foodStockpileRatio > 8)
             {

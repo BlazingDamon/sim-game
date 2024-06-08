@@ -15,7 +15,7 @@ internal class JobSystem : GameSystem
     {
         if (ISimulated.IsDayPassedSinceLastFrame(GameConstants.SECONDS_IN_DAY / 4))
         {
-            if (ItemSearcher.GetEntityCount<Consumable>() < 20)
+            if (ItemSearcher.GetEntityCount<Consumable>(x => x.Get<Consumable>().IsConsumed == false && x.Get<Consumable>().HungerRestored > 0) < 20)
             {
                 List<EntityComponent> allUnassignedFarms = GetComponents<Building>()
                     .Where(x => x.Get<Building>().AssignedJob is null)

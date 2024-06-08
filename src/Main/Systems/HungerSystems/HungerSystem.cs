@@ -49,7 +49,9 @@ internal class HungerSystem : GameSystem
     {
         if (hunger.HungerPoints > 30)
         {
-            EntityComponent? firstConsumable = GameGlobals.CurrentGameState.Components.GetEntityComponents<Consumable>().FirstOrDefault();
+            EntityComponent? firstConsumable = GameGlobals.CurrentGameState.Components
+                .GetEntityComponents<Consumable>(x => x.Get<Consumable>().IsConsumed == false && x.Get<Consumable>().HungerRestored > 0)
+                .FirstOrDefault();
 
             if (firstConsumable is not null)
             {

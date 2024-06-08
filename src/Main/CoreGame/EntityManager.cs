@@ -6,6 +6,8 @@ internal class EntityManager
     private Dictionary<ulong, Entity> _entities = new();
     private ulong SequenceNumber { get; set; } = 0;
 
+    private List<ulong> _entitiesToDelete = new();
+
     public Entity CreateEntity()
     {
         var e = new Entity
@@ -37,8 +39,18 @@ internal class EntityManager
 
     public void DeleteEntity(ulong id)
     {
-        GameGlobals.CurrentGameState.Components.DeleteEntityComponents(id);
-        _entities.Remove(id);
+        _entitiesToDelete.Add(id);
+    }
+
+    public void FinalizeFrame()
+    {
+        foreach (ulong entityId in _entitiesToDelete)
+        {
+            GameGlobals.CurrentGameState.Components.DeleteEntityComponents(entityId);
+            _entities.Remove(entityId);
+        }
+
+        _entitiesToDelete = [];
     }
 
     private void Register(Entity e)

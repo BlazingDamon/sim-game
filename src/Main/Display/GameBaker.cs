@@ -26,7 +26,7 @@ internal class GameBaker
         //stringList.Add($"Years Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_YEAR}");
         
         stringList.Add($"Current Storage");
-        stringList.Add($"Food:    {ItemSearcher.GetEntityCount<Consumable>(),3}");
+        stringList.Add($"Food:    {ItemSearcher.GetEntityCount<Consumable>(x => x.Get<Consumable>().HungerRestored > 0),3}");
         stringList.Add($"Wood:    {ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Wood),3}");
         stringList.Add($"Stone:   {ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Stone),3}");
         stringList.Add($"Statues: {ItemSearcher.GetItemCountByName("Statue"),3}");
@@ -74,7 +74,7 @@ internal class GameBaker
 
         stringList.Add($"Days Passed: {(GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) / GameConstants.SECONDS_IN_DAY,3}");
         stringList.Add($"Hour of Day: {((GameGlobals.CurrentGameState.FramesPassed * GameConfig.TimePerFrameInSeconds) % GameConstants.SECONDS_IN_DAY) / GameConstants.SECONDS_IN_HOUR,3}");
-        stringList.Add($"Food: {ItemSearcher.GetEntityCount<Consumable>(),3}       Wood:{ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Wood),3}");
+        stringList.Add($"Food: {ItemSearcher.GetEntityCount<Consumable>(x => x.Get<Consumable>().HungerRestored > 0),3}       Wood:{ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Wood),3}");
         stringList.Add($"Stone:{ItemSearcher.GetBuildingMaterialCountByMaterialType(MaterialType.Stone),3}    Statues:{ItemSearcher.GetItemCountByName("Statue"),3}");
         stringList.Add($"");
         stringList.Add("For help, press [h]");

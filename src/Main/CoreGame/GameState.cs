@@ -1,5 +1,4 @@
 ﻿using Main.CoreGame;
-using Main.CoreGame.Base;
 
 namespace Main;
 
@@ -10,10 +9,7 @@ internal class GameState
 
     public EntityManager Entities { get; } = new();
     public ComponentManager Components { get; } = new();
-    public GameSystemManager Systems2 { get; } = new();
-    public List<ISimulated> SimulatedEntities { get; } = new();
-    public List<ISimulated> Buildings { get; } = new();
-    public List<ISimulated> Systems { get; } = new();
+    public GameSystemManager Systems { get; } = new();
 
     public Scene CurrentScene { get; set; } = new();
 

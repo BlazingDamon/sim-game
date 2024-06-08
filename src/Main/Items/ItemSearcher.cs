@@ -8,6 +8,9 @@ internal static class ItemSearcher
     public static int GetEntityCount<T>() where T : IGameComponent =>
         GameGlobals.CurrentGameState.Components.GetEntityComponents<T>().Count;
 
+    public static int GetEntityCount<T>(Func<EntityComponent, bool> predicate) where T : IGameComponent =>
+        GameGlobals.CurrentGameState.Components.GetEntityComponents<T>(predicate).Count;
+
     public static int GetItemCountByName(string name) =>
         GameGlobals.CurrentGameState.Components.GetEntityComponents<Item>()
             .Count(x => x.Get<Item>().Name == name);

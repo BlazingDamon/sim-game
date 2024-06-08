@@ -1,5 +1,4 @@
-﻿using Main.CoreGame;
-using Main.DebugUtils;
+﻿using Main.DebugUtils;
 using Main.DebugUtils.Models;
 using System.Diagnostics;
 
@@ -14,25 +13,14 @@ internal class GameSimulator
         GameGlobals.CurrentGameState.FramesPassed++;
 
         sw.Restart();
-        foreach (var system in GameGlobals.CurrentGameState.Systems2.GetGameSystems())
+
+        foreach (var system in GameGlobals.CurrentGameState.Systems.GetGameSystems())
         {
             system.RunSimulationFrame();
         }
 
-        foreach (var system in GameGlobals.CurrentGameState.Systems)
-        {
-            system.RunSimulationFrame();
-        }
-
-        foreach (var building in GameGlobals.CurrentGameState.Buildings)
-        {
-            building.RunSimulationFrame();
-        }
-
-        foreach (var simEntity in GameGlobals.CurrentGameState.SimulatedEntities)
-        {
-            simEntity.RunSimulationFrame();
-        }
+        GameGlobals.CurrentGameState.Entities.FinalizeFrame();
+        GameGlobals.CurrentGameState.Components.FinalizeFrame();
 
         sw.Stop();
 
