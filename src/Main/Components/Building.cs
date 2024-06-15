@@ -1,7 +1,8 @@
-﻿using Main.CoreGame.Base;
+﻿using Main.Components.Enums;
+using Main.CoreGame.Base;
 using Main.Systems.JobSystems.Base;
 
-namespace Main.Entities.Buildings;
+namespace Main.Components;
 internal class Building : IGameComponent
 {
     public BuildingType BuildingType { get; init; }

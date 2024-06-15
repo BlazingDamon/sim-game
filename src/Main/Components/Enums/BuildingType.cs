@@ -1,4 +1,4 @@
-﻿namespace Main.Entities.Buildings;
+﻿namespace Main.Components.Enums;
 internal enum BuildingType
 {
     Unknown,

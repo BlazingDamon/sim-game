@@ -1,6 +1,6 @@
 ﻿using Main.Components;
+using Main.Components.Enums;
 using Main.CoreGame.Base;
-using Main.Entities.Materials;
 
 namespace Main.Items;
 internal static class ItemSearcher

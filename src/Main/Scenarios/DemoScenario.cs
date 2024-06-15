@@ -1,5 +1,5 @@
-﻿using Main.Entities;
-using Main.Entities.Materials;
+﻿using Main.Components.Enums;
+using Main.Entities;
 using Main.Menus;
 using Main.Systems.EventSystems;
 using Main.Systems.HealthSystems;

@@ -1,7 +1,7 @@
 ﻿using Main.Components;
+using Main.Components.Enums;
 using Main.CoreGame.Base;
 using Main.Entities;
-using Main.Entities.Materials;
 
 namespace Main.Systems.JobSystems;
 internal class ForageSystem : GameSystem

@@ -1,5 +1,5 @@
-﻿using Main.Entities.Buildings;
-using Main.Entities.Materials;
+﻿using Main.Components;
+using Main.Components.Enums;
 using Main.Items;
 using Main.Menus.Base;
 

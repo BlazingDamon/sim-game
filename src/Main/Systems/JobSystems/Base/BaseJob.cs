@@ -1,5 +1,4 @@
 ﻿using Main.Components;
-using Main.Entities.Buildings;
 
 namespace Main.Systems.JobSystems.Base;
 internal class BaseJob

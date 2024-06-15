@@ -1,4 +1,4 @@
-﻿namespace Main.Entities.Materials;
+﻿namespace Main.Components.Enums;
 internal enum MaterialType
 {
     Wood,

@@ -1,10 +1,9 @@
 ﻿using Main.Components;
 using Main.CoreGame.Base;
-using Main.Entities.Buildings;
 using Main.Items;
 using Main.Systems.JobSystems.Base;
 using Main.Entities;
-using Main.Entities.Materials;
+using Main.Components.Enums;
 
 namespace Main.Systems.JobSystems;
 internal class JobSystem : GameSystem

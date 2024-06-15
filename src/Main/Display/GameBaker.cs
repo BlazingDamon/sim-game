@@ -1,6 +1,5 @@
 ﻿using Main.Components;
-using Main.Entities.Buildings;
-using Main.Entities.Materials;
+using Main.Components.Enums;
 using Main.Items;
 using Main.Systems.JobSystems;
 

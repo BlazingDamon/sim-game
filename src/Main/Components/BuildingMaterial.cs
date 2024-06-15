@@ -1,5 +1,5 @@
-﻿using Main.CoreGame.Base;
-using Main.Entities.Materials;
+﻿using Main.Components.Enums;
+using Main.CoreGame.Base;
 
 namespace Main.Components;
 internal class BuildingMaterial(MaterialType materialType) : IGameComponent
