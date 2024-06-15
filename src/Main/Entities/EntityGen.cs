@@ -8,7 +8,7 @@ internal static class EntityGen
     public static Entity Person(int ageInYears) => GameGlobals.CurrentGameState.Components.RegisterNewEntity(
         new Health { AgeInSeconds = (long)GameConstants.SECONDS_IN_YEAR * ageInYears + GameRandom.NextInt(GameConstants.SECONDS_IN_YEAR) },
         new Hunger(),
-        new Job());
+        new Employment());
 
     public static Entity BuildingMaterialItem(MaterialType materialType) => GameGlobals.CurrentGameState.Components.RegisterNewEntity(
         new Item(),

@@ -14,7 +14,7 @@ internal class BaseJob
         Building = building;
     }
 
-    public void Unassign(Job assignedJob)
+    public void Unassign(Employment assignedJob)
     {
         assignedJob.CurrentJob = null;
         

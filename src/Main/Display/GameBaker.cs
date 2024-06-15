@@ -41,21 +41,21 @@ internal class GameBaker
         stringList.Add("");
 
         int peoplePopulation2 = GameGlobals.CurrentGameState.Entities
-            .QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job))
+            .QueryByTypes(typeof(Health), typeof(Hunger), typeof(Employment))
             .Count(x => x.Get<Health>().IsAlive);
         int peopleWithoutJobs2 = GameGlobals.CurrentGameState.Entities
-            .QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job))
+            .QueryByTypes(typeof(Health), typeof(Hunger), typeof(Employment))
             .Count(x => x.Get<Health>().IsAlive &&
-                    (x.Get<Job>().CurrentJob is null ||
-                    x.Get<Job>().CurrentJob is FoodForageJob ||
-                    x.Get<Job>().CurrentJob is MaterialsForageJob));
+                    (x.Get<Employment>().CurrentJob is null ||
+                    x.Get<Employment>().CurrentJob is FoodForageJob ||
+                    x.Get<Employment>().CurrentJob is MaterialsForageJob));
         stringList.Add($"People Overview (Population: {peoplePopulation2}) ({(peopleWithoutJobs2 == 1 ? "1 person does not have a job" : peopleWithoutJobs2 + " people do not have a job")})");
         
-        foreach (var entityWithComponents in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Job)))
+        foreach (var entityWithComponents in GameGlobals.CurrentGameState.Entities.QueryByTypes(typeof(Health), typeof(Hunger), typeof(Employment)))
         {
             Health health = entityWithComponents.Get<Health>();
             Hunger hunger = entityWithComponents.Get<Hunger>();
-            Job job = entityWithComponents.Get<Job>();
+            Employment job = entityWithComponents.Get<Employment>();
             stringList.Add($"Age: {health.AgeInYears:0} years. " +
                 $"Occupation: {(job.CurrentJob is null ? "resting" : $"{job.CurrentJob.PlainName}")}. " +
                 $"{(health.HealthPoints < 40 ? "Feeling sickly. " : "")}{(hunger.HungerPoints > 50 ? "Feeling very hungry. " : "")}" +

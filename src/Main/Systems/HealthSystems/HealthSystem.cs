@@ -63,9 +63,9 @@ internal class HealthSystem : GameSystem
 
     private void DoDeath(ulong entityId)
     {
-        Job? job = GameGlobals.CurrentGameState.Components.GetGameComponent<Job>(entityId);
+        Employment? job = GameGlobals.CurrentGameState.Components.GetGameComponent<Employment>(entityId);
         job?.CurrentJob?.Unassign(job);
-        GameGlobals.CurrentGameState.Components.DeleteComponent<Job>(entityId);
+        GameGlobals.CurrentGameState.Components.DeleteComponent<Employment>(entityId);
         GameGlobals.CurrentGameState.Components.DeleteComponent<Hunger>(entityId);
     }
 }

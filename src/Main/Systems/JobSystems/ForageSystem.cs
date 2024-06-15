@@ -6,7 +6,7 @@ using Main.Entities;
 namespace Main.Systems.JobSystems;
 internal class ForageSystem : GameSystem
 {
-    public ForageSystem() : base(typeof(Health), typeof(Job)) { }
+    public ForageSystem() : base(typeof(Health), typeof(Employment)) { }
 
     public override void RunSimulationFrame()
     {
@@ -17,7 +17,7 @@ internal class ForageSystem : GameSystem
             {
                 if (health.IsEntityAgeDayPassedSinceLastFrame())
                 {
-                    var jobComponent = GetComponents<Job>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Job>();
+                    var jobComponent = GetComponents<Employment>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Employment>();
                     if (jobComponent is null || jobComponent.CurrentJob is null)
                         continue;
 

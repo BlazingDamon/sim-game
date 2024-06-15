@@ -7,6 +7,7 @@ internal class Building : IGameComponent
 {
     public BuildingType BuildingType { get; init; }
     public BaseJob? AssignedJob { get; set; }
+    public ulong? AssignedEmployeeId { get; set; }
     public int FramesSinceLastProduct { get; set; }
 
     public int SecondsToProduceProduct { get; set; } = GameConstants.SECONDS_IN_DAY * 2;
