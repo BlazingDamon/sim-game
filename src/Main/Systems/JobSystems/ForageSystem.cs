@@ -17,15 +17,15 @@ internal class ForageSystem : GameSystem
             {
                 if (health.IsEntityAgeDayPassedSinceLastFrame())
                 {
-                    var jobComponent = GetComponents<Employment>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Employment>();
-                    if (jobComponent is null || jobComponent.CurrentJob is null)
+                    Employment? employment = GetComponents<Employment>().FirstOrDefault(x => x.EntityId == healthComponent.EntityId)?.Get<Employment>();
+                    if (employment is null || !employment.IsEmployed)
                         continue;
 
-                    if (jobComponent.CurrentJob is FoodForageJob && GameRandom.NextInt(3) > 1)
+                    if (employment.JobType is JobType.FoodForage && GameRandom.NextInt(3) > 1)
                     {
                         EntityGen.FoodItem(25);
                     }
-                    else if (jobComponent.CurrentJob is MaterialsForageJob)
+                    else if (employment.JobType is JobType.MaterialsForage)
                     {
                         int random = GameRandom.NextInt(100);
                         if (random > 75)

@@ -1,7 +1,6 @@
 ﻿using Main.Components;
 using Main.CoreGame.Base;
 using Main.Items;
-using Main.Systems.JobSystems.Base;
 using Main.Entities;
 using Main.Components.Enums;
 
@@ -17,30 +16,29 @@ internal class JobSystem : GameSystem
             if (ItemSearcher.GetEntityCount<Consumable>(x => x.Get<Consumable>().IsConsumed == false && x.Get<Consumable>().HungerRestored > 0) < 20)
             {
                 List<EntityComponent> allUnassignedFarms = GetComponents<Building>()
-                    .Where(x => x.Get<Building>().AssignedJob is null)
+                    .Where(x => x.Get<Building>().AssignedEmployeeId is null)
                     .Where(x => x.Get<Building>().BuildingType == BuildingType.Farm)
                     .ToList();
 
-                foreach (var jobComponent in GetComponents<Employment>())
+                foreach (var employmentComponent in GetComponents<Employment>())
                 {
-                    Employment job = jobComponent.Get<Employment>();
-                    if (job.CurrentJob == null || job.CurrentJob.Building?.BuildingType != BuildingType.Farm)
+                    Employment employment = employmentComponent.Get<Employment>();
+                    if (!employment.IsEmployed || employment.BuildingType != BuildingType.Farm)
                     {
-                        if (job.CurrentJob is not null)
-                            job.CurrentJob.Unassign(job);
+                        if (employment.IsEmployed)
+                            Employment.Unassign(employment);
 
                         var firstUnassignedFarm = allUnassignedFarms.FirstOrDefault();
                         if (firstUnassignedFarm is not null)
                         {
-                            var unassignedFarm = firstUnassignedFarm.Get<Building>();
-                            var farmJob = new BaseJob(unassignedFarm!.RecommendedJobPlainName, jobComponent.EntityId, unassignedFarm);
-                            job.CurrentJob = farmJob;
-                            unassignedFarm.AssignedJob = farmJob;
+                            Building unassignedFarm = firstUnassignedFarm.Get<Building>();
+                            Employment.Assign(employment, firstUnassignedFarm.EntityId, unassignedFarm.BuildingType, unassignedFarm.RecommendedJobPlainName);
+                            unassignedFarm.AssignedEmployeeId = employmentComponent.EntityId;
                             allUnassignedFarms.Remove(firstUnassignedFarm);
                         }
                         else
                         {
-                            job.CurrentJob = new FoodForageJob(jobComponent.EntityId);
+                            Employment.Assign(employment, JobType.FoodForage, "foraging for food");
                         }
                     }
 
@@ -48,18 +46,18 @@ internal class JobSystem : GameSystem
             }
             else
             {
-                foreach (var jobEntity in GetComponents<Employment>())
+                foreach (var employmentEntity in GetComponents<Employment>())
                 {
-                    Employment job = jobEntity.Get<Employment>();
-                    if (job.CurrentJob is FoodForageJob)
+                    Employment employment = employmentEntity.Get<Employment>();
+                    if (employment.IsEmployed && employment.JobType is JobType.FoodForage)
                     {
-                        job.CurrentJob.Unassign(job);
+                        Employment.Unassign(employment);
                     }
                 }
             }
 
-            List<EntityComponent> allUnassignedWorkers = GetComponents<Employment>().Where(x => x.Get<Employment>().CurrentJob is null || x.Get<Employment>().CurrentJob is MaterialsForageJob).ToList();
-            List<EntityComponent> allUnassignedBuildings = GetComponents<Building>().Where(x => x.Get<Building>().AssignedJob is null).ToList();
+            List<EntityComponent> allUnassignedWorkers = GetComponents<Employment>().Where(x => !x.Get<Employment>().IsEmployed || x.Get<Employment>().JobType is JobType.MaterialsForage).ToList();
+            List<EntityComponent> allUnassignedBuildings = GetComponents<Building>().Where(x => x.Get<Building>().AssignedEmployeeId is null).ToList();
 
             foreach (var building in allUnassignedBuildings)
             {
@@ -67,14 +65,13 @@ internal class JobSystem : GameSystem
                 if (firstAvailableWorker is not null)
                 {
                     ulong firstWorkerId = firstAvailableWorker.EntityId;
-                    Employment firstWorkerJob = firstAvailableWorker.Get<Employment>();
-                    if (firstWorkerJob.CurrentJob is not null)
-                        firstWorkerJob.CurrentJob.Unassign(firstWorkerJob);
+                    Employment firstWorkerEmployment = firstAvailableWorker.Get<Employment>();
+                    if (firstWorkerEmployment.IsEmployed)
+                        Employment.Unassign(firstWorkerEmployment);
 
                     var unassignedBuilding = building.Get<Building>();
-                    var job = new BaseJob(unassignedBuilding!.RecommendedJobPlainName, firstWorkerId, unassignedBuilding);
-                    firstWorkerJob.CurrentJob = job;
-                    unassignedBuilding.AssignedJob = job;
+                    Employment.Assign(firstWorkerEmployment, building.EntityId, unassignedBuilding.BuildingType, unassignedBuilding.RecommendedJobPlainName);
+                    unassignedBuilding.AssignedEmployeeId = firstAvailableWorker.EntityId;
                     allUnassignedWorkers.Remove(firstAvailableWorker);
                 }
                 else
@@ -85,18 +82,17 @@ internal class JobSystem : GameSystem
 
             foreach (var unassignedWorker in allUnassignedWorkers)
             {
-                var job = new MaterialsForageJob(unassignedWorker.EntityId);
-                unassignedWorker.Get<Employment>().CurrentJob = job;
+                Employment.Assign(unassignedWorker.Get<Employment>(), JobType.MaterialsForage, "foraging for wood and stone");
             }
         }
 
         IEnumerable<EntityComponent> allBuildingsWithWorkers = GetComponents<Building>()
-                    .Where(x => x.Get<Building>().AssignedJob is not null);
+                    .Where(x => x.Get<Building>().AssignedEmployeeId is not null);
 
         foreach (EntityComponent buildingWithWorker in allBuildingsWithWorkers)
         {
             Building building = buildingWithWorker.Get<Building>();
-            if (building.AssignedJob is not null)
+            if (building.AssignedEmployeeId is not null)
             {
                 building.FramesSinceLastProduct++;
 

@@ -27,7 +27,7 @@ internal class TravelerSystem : GameSystem
                 if (numberOfTravelers == 1)
                 {
                     GameDebugLogger.WriteLog("1 traveler has arrived!");
-                    GameGlobals.CurrentGameState.GameLogger.WriteLog("One traveler has arrived!");
+                    GameGlobals.CurrentGameState.GameLogger.WriteLog("1 traveler has arrived!");
                 }
                 else if (numberOfTravelers > 1)
                 {

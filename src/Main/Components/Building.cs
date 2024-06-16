@@ -1,12 +1,10 @@
 ﻿using Main.Components.Enums;
 using Main.CoreGame.Base;
-using Main.Systems.JobSystems.Base;
 
 namespace Main.Components;
 internal class Building : IGameComponent
 {
     public BuildingType BuildingType { get; init; }
-    public BaseJob? AssignedJob { get; set; }
     public ulong? AssignedEmployeeId { get; set; }
     public int FramesSinceLastProduct { get; set; }
 
